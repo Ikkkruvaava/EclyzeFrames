@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Dropdown Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg">
+        <div class="p-4 border-b">
+            <h2 class="text-lg font-semibold">Notification System Test</h2>
+            <p class="text-gray-600">Testing the dynamic notification dropdown</p>
+        </div>
+        
+        <div class="p-4">
+            <button id="testBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Test API Call
+            </button>
+            <div id="results" class="mt-4 p-4 bg-gray-50 rounded min-h-20">
+                Click the button to test the notification API
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = '9a4f2c8d7e1b5f3a9c2d8e7f1b4a5c3d';
+        
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch('/api/admin/recent-activities?limit=5', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY,
+                    },
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = `<h3 class="font-semibold text-green-600 mb-2">✅ API Success!</h3>`;
+                    html += `<p class="text-sm text-gray-600 mb-3">Found ${data.activities.length} activities</p>`;
+                    
+                    data.activities.forEach(activity => {
+                        html += `
+                            <div class="border-l-4 border-blue-500 pl-3 mb-2">
+                                <p class="font-medium text-sm">${activity.title}</p>
+                                <p class="text-xs text-gray-600">${activity.message}</p>
+                                <p class="text-xs text-gray-400">${activity.timeAgo}</p>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = `<p class="text-red-600">❌ Error: ${data.message}</p>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="text-red-600">❌ Network Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
