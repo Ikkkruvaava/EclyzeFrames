@@ -1,25 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
 import crypto from 'crypto';
+import { put, del } from '@vercel/blob';
 import { getFrameById, updateFrame, deleteFrame } from '@/lib/localDb';
-
-const getFilenameFromUrl = (url: string): string | null => {
-    try {
-        const parts = url.split('/');
-        return parts[parts.length - 1];
-    } catch {
-        return null;
-    }
-};
-
-async function ensureDir(dirPath: string) {
-    try {
-        await fs.access(dirPath);
-    } catch {
-        await fs.mkdir(dirPath, { recursive: true });
-    }
-}
 
 // GET handler
 export async function GET(
@@ -133,36 +115,28 @@ export async function PUT(
 
             if (frameImage) {
                 try {
-                    const fileExt = frameImage.name.split('.').pop();
-                    const fileName = `${crypto.randomUUID()}.${fileExt}`;
-                    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'frames');
+                    const fileName = `${crypto.randomUUID()}-${frameImage.name}`;
 
-                    await ensureDir(uploadDir);
+                    // Upload new blob
+                    const blob = await put(`frames/${fileName}`, frameImage, {
+                        access: 'public',
+                    });
 
-                    const filePath = path.join(uploadDir, fileName);
-                    const arrayBuffer = await frameImage.arrayBuffer();
-                    const buffer = Buffer.from(arrayBuffer);
+                    imageUrl = blob.url;
 
-                    await fs.writeFile(filePath, buffer);
-                    imageUrl = `/uploads/frames/${fileName}`;
-
-                    // Delete old file
-                    if (currentImageUrl) {
+                    // Delete old blob if it exists and is a Vercel Blob URL
+                    if (currentImageUrl && currentImageUrl.includes('public.blob.vercel-storage.com')) {
                         try {
-                            const oldFileName = getFilenameFromUrl(currentImageUrl);
-                            if (oldFileName) {
-                                const oldFilePath = path.join(uploadDir, oldFileName);
-                                await fs.unlink(oldFilePath);
-                            }
+                            await del(currentImageUrl);
                         } catch (err) {
-                            console.error('Error deleting old file:', err);
+                            console.error('Error deleting old blob:', err);
                         }
                     }
                 } catch (uploadError) {
-                    console.error('Error updating file:', uploadError);
+                    console.error('Error updating file to Vercel Blob:', uploadError);
                     return NextResponse.json({
                         success: false,
-                        message: 'Failed to update image',
+                        message: 'Failed to update image in Blob storage',
                         error: uploadError instanceof Error ? uploadError.message : 'Unknown error'
                     }, { status: 500 });
                 }
@@ -257,16 +231,11 @@ export async function DELETE(
             }, { status: 404 });
         }
 
-        if (existingFrame.imageUrl) {
+        if (existingFrame.imageUrl && existingFrame.imageUrl.includes('public.blob.vercel-storage.com')) {
             try {
-                const fileName = getFilenameFromUrl(existingFrame.imageUrl);
-                if (fileName) {
-                    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'frames');
-                    const filePath = path.join(uploadDir, fileName);
-                    await fs.unlink(filePath);
-                }
+                await del(existingFrame.imageUrl);
             } catch (deleteError) {
-                console.error('Error processing file deletion:', deleteError);
+                console.error('Error processing blob deletion:', deleteError);
             }
         }
 

@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
 import crypto from 'crypto';
+import { put } from '@vercel/blob';
 import { getFrames, createFrame } from '@/lib/localDb';
-
-// Helper to ensure directory exists
-async function ensureDir(dirPath: string) {
-    try {
-        await fs.access(dirPath);
-    } catch {
-        await fs.mkdir(dirPath, { recursive: true });
-    }
-}
 
 // GET all frames with optional active filter
 export async function GET(request: NextRequest) {
@@ -58,25 +48,19 @@ export async function POST(request: NextRequest) {
 
         let imageUrl = '';
         try {
-            const fileExt = frameImage.name.split('.').pop();
-            const fileName = `${crypto.randomUUID()}.${fileExt}`;
-            const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'frames');
+            const fileName = `${crypto.randomUUID()}-${frameImage.name}`;
 
-            await ensureDir(uploadDir);
+            // Upload to Vercel Blob
+            const blob = await put(`frames/${fileName}`, frameImage, {
+                access: 'public',
+            });
 
-            const filePath = path.join(uploadDir, fileName);
-            const arrayBuffer = await frameImage.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-
-            await fs.writeFile(filePath, buffer);
-
-            // Public URL
-            imageUrl = `/uploads/frames/${fileName}`;
+            imageUrl = blob.url;
         } catch (uploadError) {
-            console.error('Error saving file locally:', uploadError);
+            console.error('Error uploading to Vercel Blob:', uploadError);
             return NextResponse.json({
                 success: false,
-                message: 'Failed to upload image',
+                message: 'Failed to upload image to Blob storage',
                 error: uploadError instanceof Error ? uploadError.message : 'An unknown error occurred'
             }, { status: 500 });
         }
