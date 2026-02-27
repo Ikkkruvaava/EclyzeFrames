@@ -691,46 +691,78 @@ const UserPhotoFraming: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FDFCF9] font-outfit">
       <main className="flex-grow">
         <div className="max-w-6xl mx-auto p-4 md:p-6 pb-16 pt-8">
           {currentStep === "select" && (
-            <div className="space-y-8 pt-15">
-              <div className="text-center max-w-3xl mx-auto mb-10">
-                <div className="mb-6">
-                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Create Beautiful Photo Frames
-                  </h1>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    Transform your photos into stunning framed masterpieces. Choose from our curated collection,
-                    upload your image, and create shareable moments in seconds.
-                  </p>
+            <div className="space-y-16 pt-12">
+              {/* Hero Section */}
+              <div className="text-center max-w-4xl mx-auto mb-16 relative">
+                <div className="mb-4 inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-gray-100 shadow-sm text-sm font-medium text-gray-600">
+                  <span className="mr-2">🎉</span> Best App for community frames
+                </div>
+                <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-[1.1] tracking-tight">
+                  SAFE WEB FOR <span className="text-brand-green">FRAMES</span> TO <br />
+                  LEARN AND GROW
+                </h1>
+                <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+                  With Built In Customization And High Quality Rendering
+                </p>
+
+                <div className="flex justify-center gap-4 mb-16">
+                  <button
+                    onClick={() => {
+                      const el = document.getElementById('available-frames');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="px-8 py-4 bg-brand-green text-white rounded-full font-bold text-lg hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-200"
+                  >
+                    Start Creating
+                  </button>
                 </div>
 
-                <div className="relative max-w-lg mx-auto">
+                {/* Card Fan Display */}
+                <div className="relative h-64 md:h-80 w-full max-w-3xl mx-auto mb-20">
+                  <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center w-full h-full perspective-1000">
+                    {frames.slice(0, 5).map((frame, i) => (
+                      <div
+                        key={`fan-${frame._id}`}
+                        className="absolute w-48 h-48 md:w-64 md:h-64 bg-white rounded-3xl shadow-xl border-4 border-white overflow-hidden transition-all duration-500 hover:scale-110 hover:z-50 card-clip"
+                        style={{
+                          transform: `translateX(${(i - 2) * 60}px) rotate(${(i - 2) * 8}deg) translateY(${Math.abs(i - 2) * 10}px)`,
+                          zIndex: 10 - Math.abs(i - 2)
+                        }}
+                      >
+                        <NextImage
+                          src={frame.imageUrl}
+                          alt={frame.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="relative max-w-xl mx-auto mt-20">
                   <div className="relative">
                     <input
                       type="text"
                       placeholder="Search frames by name..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full py-3 px-5 pl-12 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                      className="w-full py-4 px-6 pl-14 border-0 rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-green transition-all duration-300 bg-white placeholder:text-gray-400 text-lg"
                     />
-                    <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery("")}
-                        className="absolute right-4 top-3.5 h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="absolute right-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-gray-600 transition-colors"
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-5 w-5" />
                       </button>
                     )}
                   </div>
-                  {searchQuery && (
-                    <p className="mt-2 text-sm text-gray-500">
-                      Showing {filteredFrames.length} {filteredFrames.length === 1 ? 'frame' : 'frames'} for &quot;{searchQuery}&quot;
-                    </p>
-                  )}
                 </div>
               </div>
 
@@ -759,23 +791,23 @@ const UserPhotoFraming: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900">
-                      Available Frames
+                <div id="available-frames">
+                  <div className="flex items-center justify-between mb-10">
+                    <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+                      Available Collections
                     </h2>
-                    <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                      {filteredFrames.length} {filteredFrames.length === 1 ? 'frame' : 'frames'}
+                    <span className="text-sm font-bold text-brand-green bg-emerald-50 px-4 py-1.5 rounded-full">
+                      {filteredFrames.length} Items Found
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {filteredFrames.map((frame) => (
                       <div
                         key={frame._id}
-                        className="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100 hover:border-blue-200"
+                        className="group relative bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer border border-transparent hover:border-emerald-100 card-clip p-3 pb-6 flex flex-col"
                         onClick={() => handleSelectFrame(frame)}
                       >
-                        <div className="relative aspect-square overflow-hidden">
+                        <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-gray-50">
                           <NextImage
                             src={frame.imageUrl}
                             alt={frame.name}
@@ -785,12 +817,10 @@ const UserPhotoFraming: React.FC = () => {
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                           />
 
-                          {/* Overlay with action buttons */}
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
-                              <div className="bg-white/95 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
-                                <span className="text-blue-600 font-medium text-sm">Select Frame</span>
-                              </div>
+                          {/* Hover Overlay */}
+                          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
+                            <div className="bg-white px-6 py-2.5 rounded-full shadow-xl border border-gray-50">
+                              <span className="text-gray-900 font-bold text-sm">Create Now</span>
                             </div>
                           </div>
 
@@ -834,20 +864,20 @@ const UserPhotoFraming: React.FC = () => {
                         </div>
 
                         {/* Card content */}
-                        <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 text-base mb-1 line-clamp-2 leading-tight">
+                        <div className="mt-4 px-3 flex flex-col flex-1">
+                          <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-2 leading-tight">
                             {frame.name}
                           </h3>
-                          <p className="text-sm text-gray-500 mb-2">
-                            {frame.dimensions.width} × {frame.dimensions.height} px
-                          </p>
-                          {frame.usageCount && (
-                            <div className="flex items-center text-xs text-gray-400">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full bg-gray-100 text-gray-600">
-                                {frame.usageCount} uses
+                          <div className="flex items-center justify-between mt-auto">
+                            <p className="text-sm font-medium text-gray-400">
+                              {frame.dimensions.width}x{frame.dimensions.height}
+                            </p>
+                            {frame.usageCount && (
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green bg-emerald-50 px-2 py-0.5 rounded-md">
+                                {frame.usageCount} shared
                               </span>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -856,78 +886,45 @@ const UserPhotoFraming: React.FC = () => {
               )}
 
               {favoriteFrames.length > 0 && (
-                <div className="mt-12 pt-8 border-t border-gray-200">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                      <Heart className="h-5 w-5 mr-2 text-red-500 fill-red-500" />
-                      Your Favorite Frames
+                <div className="mt-20 pt-12 border-t border-gray-100">
+                  <div className="flex items-center justify-between mb-10">
+                    <h2 className="text-2xl font-bold text-gray-900 flex items-center tracking-tight">
+                      <Heart className="h-6 w-6 mr-3 text-red-500 fill-red-500" />
+                      Your Favorites
                     </h2>
-                    <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                      {favoriteFrames.length} {favoriteFrames.length === 1 ? 'frame' : 'frames'}
+                    <span className="text-sm font-bold text-red-500 bg-red-50 px-4 py-1.5 rounded-full">
+                      {favoriteFrames.length} Saved
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     {frames
                       .filter(frame => favoriteFrames.includes(frame._id))
                       .map((frame) => (
                         <div
                           key={`fav-${frame._id}`}
-                          className="group relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100 hover:border-red-200"
+                          className="group relative bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer border border-transparent hover:border-red-100 p-2 pb-4 flex flex-col"
                           onClick={() => handleSelectFrame(frame)}
                         >
-                          <div className="relative aspect-square overflow-hidden">
+                          <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50">
                             <NextImage
                               src={frame.imageUrl}
                               alt={frame.name}
                               width={frame.dimensions.width}
                               height={frame.dimensions.height}
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
 
-                            {/* Favorite badge */}
-                            <div className="absolute top-2 left-2">
-                              <div className="p-1.5 rounded-full bg-red-500 shadow-md">
+                            <div className="absolute top-2 left-2 z-20">
+                              <div className="p-1.5 rounded-full bg-red-500 shadow-lg">
                                 <Heart className="h-3 w-3 text-white fill-white" />
-                              </div>
-                            </div>
-
-                            {/* Action button */}
-                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleCopyFrameLink(frame._id, e);
-                                }}
-                                className="p-1.5 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 hover:scale-110"
-                                aria-label="Copy share link"
-                                title="Copy share link"
-                              >
-                                {frameCopySuccess[frame._id] ? (
-                                  <CheckCircle2 className="h-3 w-3 text-green-500" />
-                                ) : (
-                                  <LinkIcon className="h-3 w-3 text-gray-600" />
-                                )}
-                              </button>
-                            </div>
-
-                            {/* Hover overlay */}
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-1 group-hover:translate-y-0">
-                                <div className="bg-white/95 backdrop-blur-sm rounded-md px-3 py-1.5 shadow-lg">
-                                  <span className="text-red-600 font-medium text-xs">Select</span>
-                                </div>
                               </div>
                             </div>
                           </div>
 
-                          <div className="p-3">
-                            <h3 className="text-sm font-medium text-gray-900 truncate leading-tight">
+                          <div className="mt-3 px-2">
+                            <h3 className="text-sm font-bold text-gray-900 truncate">
                               {frame.name}
                             </h3>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {frame.dimensions.width} × {frame.dimensions.height}
-                            </p>
                           </div>
                         </div>
                       ))
@@ -939,22 +936,22 @@ const UserPhotoFraming: React.FC = () => {
           )}
 
           {currentStep === "upload" && selectedFrame && (
-            <div className="max-w-4xl mx-auto bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mt-15">
-              <div className="bg-gray-50 p-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">Upload Your Photo</h2>
-                <p className="text-sm text-gray-500 mt-1">Choose a photo to place in your selected frame</p>
+            <div className="max-w-4xl mx-auto bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden mt-15">
+              <div className="bg-[#FDFCF9] p-8 border-b border-gray-50">
+                <h2 className="text-3xl font-bold text-gray-900">Upload Photo</h2>
+                <p className="text-gray-500 font-medium">Choose a photo for <span className="text-brand-green">{selectedFrame.name}</span></p>
               </div>
 
-              <div className="p-6">
-                <div className="flex flex-col lg:flex-row gap-8">
+              <div className="p-8">
+                <div className="flex flex-col lg:flex-row gap-12">
                   <div className="w-full lg:w-1/2 lg:order-2">
-                    <div className="bg-white rounded-lg p-4 border border-gray-200 mb-5">
-                      <h3 className="text-base font-medium text-gray-700 mb-3">Selected Frame</h3>
+                    <div className="bg-[#FDFCF9] rounded-3xl p-6 border border-gray-50 shadow-sm mb-6">
+                      <h3 className="text-lg font-bold text-gray-900 mb-4">Selected Frame</h3>
                       <div
                         style={{
                           aspectRatio: `${selectedFrame.dimensions.width} / ${selectedFrame.dimensions.height}`,
                         }}
-                        className="rounded-lg overflow-hidden relative flex items-center justify-center bg-gray-50"
+                        className="rounded-2xl overflow-hidden relative flex items-center justify-center bg-white shadow-inner card-clip"
                       >
                         <NextImage
                           src={selectedFrame.imageUrl}
@@ -962,36 +959,19 @@ const UserPhotoFraming: React.FC = () => {
                           width={selectedFrame.dimensions.width}
                           height={selectedFrame.dimensions.height}
                           className="max-w-full max-h-full object-contain"
-                          sizes="(max-width: 1024px) 50vw, 33vw"
                         />
                       </div>
-                      <p className="mt-3 text-sm text-gray-500">
-                        Frame: <span className="text-gray-700 font-medium">{selectedFrame.name}</span>
-                      </p>
                     </div>
 
-
-
-                    <div className="hidden md:block bg-blue-50 rounded-lg p-4 border border-blue-100">
-                      <div className="flex">
-                        <div className="flex-shrink-0">
-                          <Info className="h-5 w-5 text-blue-500" />
-                        </div>
-                        <div className="ml-3">
-                          <h4 className="text-sm font-medium text-blue-800">Tips for Best Results:</h4>
-                          <ul className="mt-2 text-sm text-blue-700 space-y-2">
-                            <li className="flex items-start">
-                              <div className="flex-shrink-0 h-4 w-4 inline-flex items-center justify-center rounded-full bg-blue-200 text-blue-600 text-xs mr-2">1</div>
-                              <span>Use high-quality photos for the best output</span>
-                            </li>
-                            <li className="flex items-start">
-                              <div className="flex-shrink-0 h-4 w-4 inline-flex items-center justify-center rounded-full bg-blue-200 text-blue-600 text-xs mr-2">2</div>
-                              <span>In the next step, you&apos;ll crop your photo to fit the frame</span>
-                            </li>
-                            <li className="flex items-start">
-                              <div className="flex-shrink-0 h-4 w-4 inline-flex items-center justify-center rounded-full bg-blue-200 text-blue-600 text-xs mr-2">3</div>
-                              <span>Add your name to personalize your framed photo</span>
-                            </li>
+                    <div className="bg-emerald-50/50 rounded-2xl p-6 border border-emerald-50">
+                      <div className="flex items-start">
+                        <Info className="h-5 w-5 text-brand-green mr-3 mt-0.5" />
+                        <div>
+                          <h4 className="text-sm font-bold text-emerald-900 mb-2">Pro Tips</h4>
+                          <ul className="text-xs text-emerald-800 space-y-2">
+                            <li>• Use high-res images for better results</li>
+                            <li>• You can Crop & Zoom in the next step</li>
+                            <li>• Add custom text to personalize</li>
                           </ul>
                         </div>
                       </div>
@@ -1000,27 +980,29 @@ const UserPhotoFraming: React.FC = () => {
 
                   <div className="w-full lg:w-1/2 lg:order-1">
                     <div
-                      className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center min-h-[300px] relative transition-colors group ${isDragOver
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 hover:border-blue-500'
+                      className={`border-4 border-dashed rounded-[2rem] p-10 flex flex-col items-center justify-center min-h-[350px] relative transition-all group ${isDragOver
+                        ? 'border-brand-green bg-emerald-50/50'
+                        : 'border-gray-100 bg-[#FDFCF9] hover:border-brand-green'
                         }`}
                       onDragOver={handleDragOver}
                       onDragEnter={handleDragEnter}
                       onDragLeave={handleDragLeave}
                       onDrop={handleDrop}
                     >
-                      <div className="rounded-full p-4 mb-4 bg-gray-100 group-hover:bg-blue-50 transition-colors">
-                        <Upload className="h-8 w-8 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                      <div className="rounded-3xl p-6 mb-6 bg-white shadow-xl group-hover:scale-110 transition-transform">
+                        <Upload className="h-10 w-10 text-brand-green" />
                       </div>
-                      <p className="text-base text-gray-700 text-center mb-2">
-                        Drag and drop an image, or <span
-                          className="text-blue-500 cursor-pointer hover:underline"
-                          onClick={() => document.getElementById('image-upload')?.click()}
-                        >browse</span>
+                      <p className="text-lg font-bold text-gray-900 text-center mb-1">
+                        Drop your photo here
                       </p>
-                      <p className="text-sm text-gray-500 text-center">
-                        Supports JPG, PNG, JPEG, GIF files (max 10MB)
+                      <p className="text-sm font-medium text-gray-400 text-center mb-6">
+                        or <span className="text-brand-green cursor-pointer">click to browse</span>
                       </p>
+
+                      <div className="flex gap-2">
+                        <span className="px-3 py-1 bg-white rounded-full text-[10px] font-bold text-gray-400 border border-gray-50 shadow-sm uppercase tracking-wider">PNG</span>
+                        <span className="px-3 py-1 bg-white rounded-full text-[10px] font-bold text-gray-400 border border-gray-50 shadow-sm uppercase tracking-wider">JPG</span>
+                      </div>
 
                       <input
                         type="file"
@@ -1040,12 +1022,10 @@ const UserPhotoFraming: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="mt-6 space-y-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Personalize Your Frame
-                      </label>
+                    <div className="mt-8 space-y-6">
+                      <h4 className="text-lg font-bold text-gray-900 tracking-tight">Personalize</h4>
                       {selectedFrame.textSettings && selectedFrame.textSettings.map((_, index) => (
-                        <div key={index}>
+                        <div key={index} className="relative">
                           <input
                             type="text"
                             value={userTexts[index] || ''}
@@ -1054,37 +1034,34 @@ const UserPhotoFraming: React.FC = () => {
                               newTexts[index] = e.target.value;
                               setUserTexts(newTexts);
                             }}
-                            placeholder={"Enter text " + (index + 1)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder={"Enter text here..."}
+                            className="w-full px-6 py-4 bg-[#FDFCF9] border-0 rounded-2xl shadow-inner focus:outline-none focus:ring-2 focus:ring-brand-green transition-all text-lg font-medium placeholder:text-gray-300"
                           />
                         </div>
                       ))}
-                      <p className="mt-2 text-sm text-gray-500">
-                        Text will appear in the text areas of the frame
-                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-between mt-8">
+                <div className="flex justify-between mt-12">
                   <button
                     type="button"
                     onClick={() => setCurrentStep("select")}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center"
+                    className="px-8 py-3 bg-white border border-gray-100 text-gray-700 rounded-full font-bold shadow-sm hover:bg-gray-50 transition-all flex items-center"
                   >
-                    <ChevronLeft className="h-4 w-4 mr-2" /> Back
+                    <ChevronLeft className="h-5 w-5 mr-2" /> Back
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setCurrentStep("crop")}
                     disabled={!userImage}
-                    className={`px-5 py-2 text-white rounded-md text-sm font-medium transition-colors flex items-center ${userImage
-                      ? 'bg-blue-500 hover:bg-blue-600'
-                      : 'bg-gray-400 cursor-not-allowed'
+                    className={`px-8 py-3 text-white rounded-full font-bold transition-all flex items-center shadow-lg ${userImage
+                      ? 'bg-brand-green hover:bg-emerald-600 hover:shadow-emerald-100'
+                      : 'bg-gray-200 cursor-not-allowed text-gray-400 shadow-none'
                       }`}
                   >
-                    Continue <ArrowRight className="h-4 w-4 ml-2" />
+                    Continue <ArrowRight className="h-5 w-5 ml-2" />
                   </button>
                 </div>
               </div>
@@ -1103,12 +1080,12 @@ const UserPhotoFraming: React.FC = () => {
               <div className="p-6">
                 {/* New mobile-friendly crop controls */}
                 {isMobileDevice && (
-                  <div className="flex justify-center mb-4 space-x-3">
+                  <div className="flex justify-center mb-6 space-x-3">
                     <button
                       onClick={handleAutoFit}
-                      className="px-3 py-1.5 bg-blue-500 text-white rounded-md text-sm font-medium flex items-center"
+                      className="px-6 py-2 bg-brand-green text-white rounded-full font-bold text-sm flex items-center shadow-lg"
                     >
-                      <Maximize2 className="h-4 w-4 mr-1" /> Auto-Fit
+                      <Maximize2 className="h-4 w-4 mr-2" /> Auto-Fit
                     </button>
                   </div>
                 )}
@@ -1142,14 +1119,14 @@ const UserPhotoFraming: React.FC = () => {
                 </div>
 
                 <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-white rounded-lg p-4 border border-gray-200">
-                    <h3 className="text-base font-medium text-gray-700 mb-3 flex items-center">
-                      <CropIcon className="h-4 w-4 mr-2 text-blue-500" />
+                  <div className="bg-white rounded-3xl p-6 border border-gray-50 shadow-sm transition-all hover:shadow-md">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                      <CropIcon className="h-5 w-5 mr-3 text-brand-green" />
                       Crop Instructions
                     </h3>
 
                     <div className="space-y-4">
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm font-medium text-gray-500 leading-relaxed">
                         {isMobileDevice
                           ? "Drag the corners of the selection box to crop your photo. Use the Auto-Fit button for a perfect fit."
                           : "Drag the corners of the selection box to perfectly crop your photo. The crop ratio is locked to match the frame's photo area dimensions."
@@ -1159,9 +1136,9 @@ const UserPhotoFraming: React.FC = () => {
                       {!isMobileDevice && (
                         <button
                           onClick={handleAutoFit}
-                          className="mt-3 px-3 py-1.5 bg-blue-500 text-white rounded-md text-sm font-medium flex items-center"
+                          className="mt-2 px-6 py-2 bg-brand-green text-white rounded-full font-bold text-sm flex items-center shadow-lg hover:shadow-emerald-100 transition-all"
                         >
-                          <Maximize2 className="h-4 w-4 mr-1.5" /> Auto-Fit to Frame
+                          <Maximize2 className="h-4 w-4 mr-2" /> Auto-Fit to Frame
                         </button>
                       )}
 
@@ -1207,17 +1184,17 @@ const UserPhotoFraming: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentStep("upload")}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center"
+                    className="px-8 py-3 bg-white border border-gray-100 text-gray-700 rounded-full font-bold shadow-sm hover:bg-gray-50 transition-all flex items-center"
                   >
-                    <ChevronLeft className="h-4 w-4 mr-2" /> Back
+                    <ChevronLeft className="h-5 w-5 mr-2" /> Back
                   </button>
 
                   <button
                     type="button"
                     onClick={handleApplyCrop}
-                    className="px-5 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors flex items-center"
+                    className="px-8 py-3 bg-brand-green text-white rounded-full font-bold shadow-lg hover:bg-emerald-600 hover:shadow-emerald-100 transition-all flex items-center"
                   >
-                    Apply Crop <ArrowRight className="h-4 w-4 ml-2" />
+                    Apply Crop <ArrowRight className="h-5 w-5 ml-2" />
                   </button>
                 </div>
               </div>
@@ -1225,11 +1202,11 @@ const UserPhotoFraming: React.FC = () => {
           )}
 
           {currentStep === "preview" && selectedFrame && (selectedFrame.hasImageArea === false || croppedImage) && (
-            <div className="max-w-4xl mx-auto bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mt-15">
-              <div className="bg-gray-50 p-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">Preview Your Framed Photo</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  This is how your final framed photo will look
+            <div className="max-w-4xl mx-auto bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden mt-15">
+              <div className="bg-[#FDFCF9] p-8 border-b border-gray-50">
+                <h2 className="text-3xl font-bold text-gray-900">Preview</h2>
+                <p className="text-gray-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                  Almost ready! Check your <span className="text-brand-green">{selectedFrame.name}</span>
                 </p>
               </div>
 
@@ -1269,9 +1246,7 @@ const UserPhotoFraming: React.FC = () => {
                 </div>
 
                 <div className="my-4 space-y-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Personalize Your Frame
-                  </label>
+                  <h4 className="text-lg font-bold text-gray-900 tracking-tight">Personalize</h4>
                   {selectedFrame.textSettings && selectedFrame.textSettings.map((_, index) => (
                     <div key={index}>
                       <input
@@ -1282,8 +1257,8 @@ const UserPhotoFraming: React.FC = () => {
                           newTexts[index] = e.target.value;
                           setUserTexts(newTexts);
                         }}
-                        placeholder={"Enter text " + (index + 1)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder={"Enter text here..."}
+                        className="w-full px-6 py-4 bg-[#FDFCF9] border-0 rounded-2xl shadow-inner focus:outline-none focus:ring-2 focus:ring-brand-green transition-all text-lg font-medium placeholder:text-gray-300"
                       />
                     </div>
                   ))}
@@ -1348,25 +1323,25 @@ const UserPhotoFraming: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentStep(selectedFrame.hasImageArea === false ? "select" : "crop")}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center"
+                    className="px-8 py-3 bg-white border border-gray-100 text-gray-700 rounded-full font-bold shadow-sm hover:bg-gray-50 transition-all flex items-center"
                   >
-                    <ChevronLeft className="h-4 w-4 mr-2" /> Back
+                    <ChevronLeft className="h-5 w-5 mr-2" /> Back
                   </button>
 
                   <button
                     type="button"
                     onClick={handleGenerateImage}
-                    className="p-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors flex items-center"
+                    className="px-8 py-3 bg-brand-green text-white rounded-full font-bold shadow-lg hover:bg-emerald-600 hover:shadow-emerald-100 transition-all flex items-center"
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
                       <>
-                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
                         Processing...
                       </>
                     ) : (
                       <>
-                        Generate Image <ArrowRight className="h-4 w-4 ml-2" />
+                        Generate Image <ArrowRight className="h-5 w-5 ml-2" />
                       </>
                     )}
                   </button>
@@ -1376,24 +1351,19 @@ const UserPhotoFraming: React.FC = () => {
           )}
 
           {currentStep === "complete" && finalImage && selectedFrame && (
-            <div className="max-w-4xl mx-auto bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mt-15">
-              <div className="bg-gray-50 p-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">Your Framed Photo is Ready!</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Download or share your creation
-                </p>
+            <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-100 shadow-2xl overflow-hidden mt-15">
+              <div className="bg-emerald-50/50 p-6 border-b border-emerald-100">
+                <h2 className="text-2xl font-bold text-gray-900">Your Masterpiece is Ready!</h2>
+                <p className="text-gray-500 font-medium">Download or share your creation with the world</p>
               </div>
 
-              <div className="p-6">
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 mb-3">
-                    <Check className="h-6 w-6" />
+              <div className="p-8">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-brand-green mb-4">
+                    <Check className="h-8 w-8" />
                   </div>
-                  <h2 className="text-xl font-medium text-gray-900 mb-2">Success!</h2>
-                  <p className="text-gray-600">Your photo has been successfully framed and is ready to download or share.</p>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Final dimensions: {selectedFrame.dimensions.width} × {selectedFrame.dimensions.height} pixels
-                  </p>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">Perfect!</h2>
+                  <p className="text-gray-500 font-medium">Your photo has been successfully framed.</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -1427,10 +1397,10 @@ const UserPhotoFraming: React.FC = () => {
                       <a
                         href={finalImage}
                         download={`framed-photo-${selectedFrame.name.replace(/\s+/g, '-').toLowerCase()}.png`}
-                        className="w-full py-2 px-4 bg-blue-500 text-white rounded-md font-medium mb-3 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                        className="w-full py-4 px-4 bg-brand-green text-white rounded-full font-bold mb-4 hover:bg-emerald-600 transition-all flex items-center justify-center shadow-lg hover:shadow-emerald-100"
                       >
-                        <Save className="h-4 w-4 mr-2" />
-                        Download Image
+                        <Save className="h-5 w-5 mr-2" />
+                        Download High Res
                       </a>
 
                       <button
@@ -1452,10 +1422,10 @@ const UserPhotoFraming: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleShare}
-                        className="w-full py-2 px-4 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition-colors flex items-center justify-center mb-3"
+                        className="w-full py-4 px-4 bg-brand-green text-white rounded-full font-bold hover:bg-emerald-600 transition-all flex items-center justify-center mb-4 shadow-lg hover:shadow-emerald-100"
                       >
-                        <Share className="h-4 w-4 mr-2" />
-                        Share Image
+                        <Share className="h-5 w-5 mr-3" />
+                        Share Now
                       </button>
                     </div>
                   </div>
@@ -1471,10 +1441,10 @@ const UserPhotoFraming: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm font-medium transition-colors inline-flex items-center"
+                    className="px-8 py-3 bg-brand-green hover:bg-emerald-600 text-white rounded-full font-bold transition-all inline-flex items-center shadow-lg hover:shadow-emerald-100"
                   >
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Create Another Framed Photo
+                    <RefreshCw className="h-5 w-5 mr-2" />
+                    Create Another
                   </button>
                 </div>
               </div>
@@ -1484,46 +1454,46 @@ const UserPhotoFraming: React.FC = () => {
       </main>
 
       {(currentStep === "select" || currentStep === "upload") && (
-        <section className="bg-white border-t border-gray-200 py-10 mt-6">
-          <div className="max-w-5xl mx-auto px-4">
-            <h2 className="text-xl font-medium text-gray-900 text-center mb-8">How It Works</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+        <section className="bg-white border-t border-gray-50 py-20 mt-20">
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-gray-900 text-center mb-16 tracking-tight">HOW IT WORKS</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               <div className="flex flex-col items-center text-center">
-                <div className="relative w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <Camera className="h-8 w-8 text-blue-600" />
-                  <div className="absolute -right-2 -top-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-medium text-sm">
+                <div className="relative w-24 h-24 bg-[#FDFCF9] rounded-3xl flex items-center justify-center mb-6 shadow-xl border border-gray-50">
+                  <Camera className="h-10 w-10 text-brand-green" />
+                  <div className="absolute -right-3 -top-3 bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
                     1
                   </div>
                 </div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Select a Frame</h3>
-                <p className="text-gray-600 text-sm">
-                  Choose from our collection of beautiful frames designed for every occasion.
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Pick Collection</h3>
+                <p className="text-gray-500 font-medium px-4">
+                  Browse through our premium curated library of community frames.
                 </p>
               </div>
 
               <div className="flex flex-col items-center text-center">
-                <div className="relative w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <CropIcon className="h-8 w-8 text-blue-600" />
-                  <div className="absolute -right-2 -top-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-medium text-sm">
+                <div className="relative w-24 h-24 bg-[#FDFCF9] rounded-3xl flex items-center justify-center mb-6 shadow-xl border border-gray-50">
+                  <Upload className="h-10 w-10 text-brand-green" />
+                  <div className="absolute -right-3 -top-3 bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
                     2
                   </div>
                 </div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Add Your Photo</h3>
-                <p className="text-gray-600 text-sm">
-                  Upload and crop your favorite photo to fit perfectly in the frame.
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Upload Photo</h3>
+                <p className="text-gray-500 font-medium px-4">
+                  Add your favorite photo and adjust it to fit the frame perfectly.
                 </p>
               </div>
 
               <div className="flex flex-col items-center text-center">
-                <div className="relative w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <Share2 className="h-8 w-8 text-blue-600" />
-                  <div className="absolute -right-2 -top-2 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-medium text-sm">
+                <div className="relative w-24 h-24 bg-[#FDFCF9] rounded-3xl flex items-center justify-center mb-6 shadow-xl border border-gray-50">
+                  <Share2 className="h-10 w-10 text-brand-green" />
+                  <div className="absolute -right-3 -top-3 bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
                     3
                   </div>
                 </div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Share Your Creation</h3>
-                <p className="text-gray-600 text-sm">
-                  Download your framed photo and share it with friends and family.
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Share Away</h3>
+                <p className="text-gray-500 font-medium px-4">
+                  Download high-res results instantly and share with your community.
                 </p>
               </div>
             </div>

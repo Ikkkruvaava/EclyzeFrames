@@ -1,97 +1,127 @@
-import { kv } from '@vercel/kv';
-import crypto from 'crypto';
+import { Schema, model, models } from 'mongoose';
+import dbConnect from './mongodb';
 
 export interface FrameData {
     _id: string;
     name: string;
     imageUrl: string;
-    dimensions: any;
+    dimensions: {
+        width: number;
+        height: number;
+    };
     hasImageArea?: boolean;
-    placementCoords: any;
-    textSettings: any;
+    placementCoords: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    textSettings: Array<{
+        x: number;
+        y: number;
+        fontSize: number;
+        color: string;
+        align: string;
+        placeholder?: string;
+    }>;
     isActive: boolean;
     usageCount: number;
     createdAt: string;
     updatedAt: string;
 }
 
-const DB_KEY = 'frames_db';
+const FrameSchema = new Schema({
+    name: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    dimensions: {
+        width: Number,
+        height: Number
+    },
+    hasImageArea: { type: Boolean, default: true },
+    placementCoords: {
+        x: Number,
+        y: Number,
+        width: Number,
+        height: Number
+    },
+    textSettings: [{
+        x: Number,
+        y: Number,
+        fontSize: Number,
+        color: String,
+        align: String,
+        placeholder: String
+    }],
+    isActive: { type: Boolean, default: true },
+    usageCount: { type: Number, default: 0 },
+}, {
+    timestamps: true,
+    toJSON: {
+        transform: (_, ret: any) => {
+            ret._id = ret._id.toString();
+            return ret;
+        }
+    }
+});
+
+const Frame = models.Frame || model('Frame', FrameSchema);
 
 export async function initDb() {
-    try {
-        const exists = await kv.exists(DB_KEY);
-        if (!exists) {
-            await kv.set(DB_KEY, { frames: [] });
-        }
-    } catch (error) {
-        console.error('Error initializing KV DB:', error);
-    }
+    await dbConnect();
 }
 
 export async function getDb(): Promise<{ frames: FrameData[] }> {
-    try {
-        const data = await kv.get<{ frames: FrameData[] }>(DB_KEY);
-        return data || { frames: [] };
-    } catch (error) {
-        console.error('Error getting KV DB:', error);
-        return { frames: [] };
-    }
+    await dbConnect();
+    const frames = await Frame.find({}).sort({ createdAt: -1 });
+    return { frames: JSON.parse(JSON.stringify(frames)) };
 }
 
-export async function saveDb(data: { frames: FrameData[] }): Promise<void> {
-    try {
-        await kv.set(DB_KEY, data);
-    } catch (error) {
-        console.error('Error saving to KV DB:', error);
-    }
+export async function saveDb(_data: { frames: FrameData[] }): Promise<void> {
+    // MongoDB handles persistence automatically per operation.
 }
 
 export async function getFrames(query: any = {}): Promise<FrameData[]> {
-    const db = await getDb();
-    let frames = db.frames;
+    await dbConnect();
+    const mongoQuery: any = {};
     if (query.isActive !== undefined) {
-        frames = frames.filter(f => f.isActive === query.isActive);
+        mongoQuery.isActive = query.isActive;
     }
-    return frames.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const frames = await Frame.find(mongoQuery).sort({ createdAt: -1 });
+    return JSON.parse(JSON.stringify(frames));
 }
 
 export async function getFrameById(id: string): Promise<FrameData | undefined> {
-    const db = await getDb();
-    return db.frames.find(f => f._id === id);
+    await dbConnect();
+    try {
+        const frame = await Frame.findById(id);
+        return frame ? JSON.parse(JSON.stringify(frame)) : undefined;
+    } catch (e) {
+        return undefined;
+    }
 }
 
 export async function createFrame(frame: Omit<FrameData, '_id' | 'createdAt' | 'updatedAt' | 'usageCount'> & { usageCount?: number }): Promise<FrameData> {
-    const db = await getDb();
-    const newFrame: FrameData = {
-        ...frame,
-        usageCount: frame.usageCount || 0,
-        _id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
-    db.frames.push(newFrame);
-    await saveDb(db);
-    return newFrame;
+    await dbConnect();
+    const newFrame = await Frame.create(frame);
+    return JSON.parse(JSON.stringify(newFrame));
 }
 
 export async function updateFrame(id: string, updates: Partial<FrameData>): Promise<FrameData | null> {
-    const db = await getDb();
-    const index = db.frames.findIndex(f => f._id === id);
-    if (index === -1) return null;
-
-    db.frames[index] = {
-        ...db.frames[index],
-        ...updates,
-        updatedAt: new Date().toISOString()
-    };
-    await saveDb(db);
-    return db.frames[index];
+    await dbConnect();
+    try {
+        const updatedFrame = await Frame.findByIdAndUpdate(id, updates, { new: true });
+        return updatedFrame ? JSON.parse(JSON.stringify(updatedFrame)) : null;
+    } catch (e) {
+        return null;
+    }
 }
 
 export async function deleteFrame(id: string): Promise<boolean> {
-    const db = await getDb();
-    const initialLength = db.frames.length;
-    db.frames = db.frames.filter(f => f._id !== id);
-    await saveDb(db);
-    return db.frames.length < initialLength;
+    await dbConnect();
+    try {
+        const result = await Frame.findByIdAndDelete(id);
+        return !!result;
+    } catch (e) {
+        return false;
+    }
 }
