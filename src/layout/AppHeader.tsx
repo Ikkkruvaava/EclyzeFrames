@@ -4,7 +4,7 @@ import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
 import Link from "next/link";
-import React, { useState ,useEffect,useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -84,17 +84,14 @@ const AppHeader: React.FC = () => {
 
           <Link href="/" className="lg:hidden">
             <div className="flex items-center space-x-3">
-              <img 
-                src="/aic-amal-logo.svg" 
-                alt="AIC Amal Logo" 
+              <img
+                src="/aic-amal-logo.svg"
+                alt="AIC Amal Logo"
                 className="h-8 w-auto"
               />
               <div className="flex flex-col -space-y-1">
                 <span className="text-lg font-semibold leading-tight text-gray-900 dark:text-white">
-                  Amal App
-                </span>
-                <span className="text-xs leading-tight text-gray-600 dark:text-gray-300">
-                  Akode Islamic Centre
+                  ECLYZE Frames
                 </span>
               </div>
             </div>
@@ -156,21 +153,20 @@ const AppHeader: React.FC = () => {
           </div>
         </div>
         <div
-          className={`${
-            isApplicationMenuOpen ? "flex" : "hidden"
-          } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
+          className={`${isApplicationMenuOpen ? "flex" : "hidden"
+            } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
 
-           <NotificationDropdown /> 
+            <NotificationDropdown />
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown /> 
-    
+          <UserDropdown />
+
         </div>
       </div>
     </header>

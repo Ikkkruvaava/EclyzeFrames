@@ -1,8 +1,8 @@
 {
   "frames": [
     {
-      "name": "Frame1",
-      "imageUrl": "/uploads/frames/bf3f07fe-690b-45ce-9c79-45b52d66548e.jpg",
+      "name": "Poster Automation",
+      "imageUrl": "/uploads/frames/2d1039dc-75b4-44ee-89ce-f086bcce1801.jpg",
       "dimensions": {
         "width": 3240,
         "height": 4050
@@ -11,31 +11,31 @@
       "placementCoords": null,
       "textSettings": [
         {
-          "x": 502.2000000000003,
-          "y": 980.0999999999999,
+          "x": 510.3000000000002,
+          "y": 1012.4999999999998,
           "width": 1818.4499999999998,
-          "height": 202.50000000000023,
+          "height": 202.5,
           "font": "Arial",
-          "size": 110,
-          "color": "#000000",
+          "size": 115,
+          "color": "#00879d",
           "align": "left"
         },
         {
-          "x": 999.0999999999998,
-          "y": 1161.0999999999997,
-          "width": 700,
-          "height": 203,
+          "x": 1039.6000000000001,
+          "y": 1153,
+          "width": 800,
+          "height": 200,
           "font": "Arial",
-          "size": 110,
-          "color": "#000000",
+          "size": 115,
+          "color": "#00879d",
           "align": "left"
         }
       ],
       "isActive": true,
-      "usageCount": 2,
-      "_id": "168057af-a358-49dc-b097-54067e9288a8",
-      "createdAt": "2026-02-27T15:56:58.475Z",
-      "updatedAt": "2026-02-27T15:58:32.354Z"
+      "usageCount": 1,
+      "_id": "b3662192-5a91-4f01-b6fd-0e44ece9e589",
+      "createdAt": "2026-02-27T16:35:53.934Z",
+      "updatedAt": "2026-02-27T16:36:08.817Z"
     }
   ]
 }

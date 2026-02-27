@@ -8,10 +8,10 @@ import Script from "next/script";
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "AIC Amal - Photo Framing Platform",
-  description: "Create beautiful photo frames with Akode Islamic Centre's official platform.",
-  keywords: "Akode Islamic Centre, AIC Amal, photo framing, community programs",
-  metadataBase: new URL("https://aicamal.app"),
+  title: "ECLYZE Frames - Photo Framing Platform",
+  description: "Create beautiful photo frames with ECLYZE's official platform.",
+  keywords: "ECLYZE, photo framing, community programs",
+  metadataBase: new URL("https://eclyze.com"),
   alternates: {
     canonical: "/",
     languages: {
@@ -19,10 +19,10 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "AIC Amal - Photo Framing Platform",
-    description: "Create beautiful photo frames with Akode Islamic Centre's official platform.",
-    url: "https://aicamal.app",
-    siteName: "AIC Amal",
+    title: "ECLYZE Frames - Photo Framing Platform",
+    description: "Create beautiful photo frames with ECLYZE's official platform.",
+    url: "https://eclyze.com",
+    siteName: "ECLYZE Frames",
     images: [
       {
         url: "/og-image.jpg", // Make sure to create this image and place it in the public folder
@@ -36,8 +36,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AIC Amal - Photo Framing Platform",
-    description: "Create beautiful photo frames with Akode Islamic Centre's official platform.",
+    title: "ECLYZE Frames - Photo Framing Platform",
+    description: "Create beautiful photo frames with ECLYZE's official platform.",
     images: ["/og-image.jpg"], // Make sure to create this image and place it in the public folder
   },
   robots: {

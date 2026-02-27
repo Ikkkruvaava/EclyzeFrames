@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   ChevronDownIcon,
-    HorizontaLDots,
+  HorizontaLDots,
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
@@ -241,10 +241,7 @@ const AppSidebar: React.FC = () => {
               />
               <div className="flex flex-col -space-y-1">
                 <span className="text-lg font-semibold leading-tight text-gray-900 dark:text-white">
-                  Amal App
-                </span>
-                <span className="text-xs leading-tight text-gray-600 dark:text-gray-300">
-                  Akode Islamic Centre
+                  ECLYZE Frames
                 </span>
               </div>
             </div>

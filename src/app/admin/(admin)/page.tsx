@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Dashboard | AIC Amal Photo Framing",
+  title: "Dashboard | ECLYZE Frames",
   description: "Dashboard for photo framing application.",
 };
 
