@@ -1,8 +1,5 @@
-import fs from 'fs/promises';
-import path from 'path';
+import { kv } from '@vercel/kv';
 import crypto from 'crypto';
-
-const DB_FILE = path.join(process.cwd(), 'data', 'db.json');
 
 export interface FrameData {
     _id: string;
@@ -18,34 +15,35 @@ export interface FrameData {
     updatedAt: string;
 }
 
+const DB_KEY = 'frames_db';
+
 export async function initDb() {
     try {
-        const dir = path.dirname(DB_FILE);
-        try {
-            await fs.access(dir);
-        } catch {
-            await fs.mkdir(dir, { recursive: true });
-        }
-
-        try {
-            await fs.access(DB_FILE);
-        } catch {
-            await fs.writeFile(DB_FILE, JSON.stringify({ frames: [] }, null, 2));
+        const exists = await kv.exists(DB_KEY);
+        if (!exists) {
+            await kv.set(DB_KEY, { frames: [] });
         }
     } catch (error) {
-        console.error('Error initializing DB:', error);
+        console.error('Error initializing KV DB:', error);
     }
 }
 
 export async function getDb(): Promise<{ frames: FrameData[] }> {
-    await initDb();
-    const data = await fs.readFile(DB_FILE, 'utf-8');
-    return JSON.parse(data);
+    try {
+        const data = await kv.get<{ frames: FrameData[] }>(DB_KEY);
+        return data || { frames: [] };
+    } catch (error) {
+        console.error('Error getting KV DB:', error);
+        return { frames: [] };
+    }
 }
 
-export async function saveDb(data: any): Promise<void> {
-    await initDb();
-    await fs.writeFile(DB_FILE, JSON.stringify(data, null, 2));
+export async function saveDb(data: { frames: FrameData[] }): Promise<void> {
+    try {
+        await kv.set(DB_KEY, data);
+    } catch (error) {
+        console.error('Error saving to KV DB:', error);
+    }
 }
 
 export async function getFrames(query: any = {}): Promise<FrameData[]> {
@@ -80,9 +78,6 @@ export async function updateFrame(id: string, updates: Partial<FrameData>): Prom
     const db = await getDb();
     const index = db.frames.findIndex(f => f._id === id);
     if (index === -1) return null;
-
-    // if usage count is a special object like { $inc: { usageCount: 1 } }, we need to handle it.
-    // Actually, we'll handle $inc logic in the route.ts directly.
 
     db.frames[index] = {
         ...db.frames[index],
