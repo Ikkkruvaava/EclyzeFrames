@@ -57,12 +57,113 @@ interface Frame {
   usageCount?: number;
 }
 
+// Memoized Frame Card Component to prevent unnecessary re-renders in the main gallery
+const FrameCard = React.memo(({
+  frame,
+  onSelect,
+  onCopyLink,
+  onToggleFavorite,
+  isFavorite,
+  copySuccess
+}: {
+  frame: Frame;
+  onSelect: (f: Frame) => void;
+  onCopyLink: (id: string, e: any) => void;
+  onToggleFavorite: (id: string, e: any) => void;
+  isFavorite: boolean;
+  copySuccess: boolean;
+}) => {
+  return (
+    <div
+      className="group relative bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer border border-transparent hover:border-emerald-100 card-clip p-3 pb-6 flex flex-col"
+      onClick={() => onSelect(frame)}
+    >
+      <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-gray-50">
+        <NextImage
+          src={frame.imageUrl}
+          alt={frame.name}
+          width={400} // Optimization: Use smaller width for thumbnails
+          height={400}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+          loading="lazy"
+        />
+
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
+          <div className="bg-white px-6 py-2.5 rounded-full shadow-xl border border-gray-50">
+            <span className="text-gray-900 font-bold text-sm">Create Now</span>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={(e) => onCopyLink(frame._id, e)}
+            className="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 hover:scale-110"
+            aria-label="Copy share link"
+            title="Copy share link"
+          >
+            {copySuccess ? (
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+            ) : (
+              <LinkIcon className="h-4 w-4 text-gray-600" />
+            )}
+          </button>
+          <button
+            onClick={(e) => onToggleFavorite(frame._id, e)}
+            className="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 hover:scale-110"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart
+              className={`h-4 w-4 transition-colors ${isFavorite
+                ? "text-red-500 fill-red-500"
+                : "text-gray-600 hover:text-red-500"
+                }`}
+            />
+          </button>
+        </div>
+
+        {/* Favorite indicator */}
+        {isFavorite && (
+          <div className="absolute top-3 left-3">
+            <div className="p-1.5 rounded-full bg-red-500 shadow-md">
+              <Heart className="h-3 w-3 text-white fill-white" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Card content */}
+      <div className="mt-4 px-3 flex flex-col flex-1">
+        <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-2 leading-tight">
+          {frame.name}
+        </h3>
+        <div className="flex items-center justify-between mt-auto">
+          <p className="text-sm font-medium text-gray-400">
+            {frame.dimensions.width}x{frame.dimensions.height}
+          </p>
+          {frame.usageCount && (
+            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green bg-emerald-50 px-2 py-0.5 rounded-md">
+              {frame.usageCount} shared
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+FrameCard.displayName = "FrameCard";
+
 
 const UserPhotoFraming: React.FC = () => {
   const [frames, setFrames] = useState<Frame[]>([]);
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
   const [userImage, setUserImage] = useState<string | null>(null);
   const [userTexts, setUserTexts] = useState<string[]>([]);
+  const [debouncedTexts, setDebouncedTexts] = useState<string[]>([]);
   const [finalImage, setFinalImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -70,6 +171,20 @@ const UserPhotoFraming: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<"select" | "upload" | "crop" | "preview" | "complete">("select");
   const [favoriteFrames, setFavoriteFrames] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // Memoized search filtering for speed
+  const filteredFrames = React.useMemo(() => {
+    if (!searchQuery.trim()) return frames;
+    const lowerQuery = searchQuery.toLowerCase();
+    return frames.filter((frame) =>
+      frame.name.toLowerCase().includes(lowerQuery)
+    );
+  }, [frames, searchQuery]);
+
+  // Memoized favorites
+  const favoriteFramesList = React.useMemo(() => {
+    return frames.filter(frame => favoriteFrames.includes(frame._id));
+  }, [frames, favoriteFrames]);
   const [frameCopySuccess, setFrameCopySuccess] = useState<{ [key: string]: boolean }>({});
   const [isMobileDevice, setIsMobileDevice] = useState<boolean>(false);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
@@ -138,6 +253,14 @@ const UserPhotoFraming: React.FC = () => {
       setFavoriteFrames(JSON.parse(savedFavorites));
     }
   }, []); // Empty dependency array - only run once on mount
+
+  // Debounce text updates for smooth typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedTexts(userTexts);
+    }, 400); // 400ms delay
+    return () => clearTimeout(timer);
+  }, [userTexts]);
 
   // Separate useEffect to handle URL parameter changes
   useEffect(() => {
@@ -537,7 +660,7 @@ const UserPhotoFraming: React.FC = () => {
         setError('Failed to render preview. Please try again.');
         setIsLoading(false);
       });
-  }, [currentStep, croppedImage, selectedFrame, userTexts]);
+  }, [currentStep, croppedImage, selectedFrame, debouncedTexts]);
 
   const trackFrameUsage = async (frameId: string): Promise<boolean> => {
     if (!frameId) return false;
@@ -659,17 +782,12 @@ const UserPhotoFraming: React.FC = () => {
     }
   };
 
-  const filteredFrames = frames.filter(frame =>
-    frame.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   if (isLoading && currentStep === "select") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#FDFCF9]">
         <div className="text-center">
-          <div className="inline-block animate-spin h-12 w-12 border-4 border-gray-300 border-t-blue-500 rounded-full mb-4"></div>
-          <p className="text-gray-600 text-lg font-medium">Loading frames...</p>
-          <p className="text-gray-500 mt-2">Please wait a moment</p>
+          <div className="inline-block animate-spin h-12 w-12 border-4 border-gray-100 border-t-brand-green rounded-full mb-4"></div>
+          <p className="text-gray-900 text-lg font-bold">Loading frames...</p>
         </div>
       </div>
     );
@@ -677,16 +795,16 @@ const UserPhotoFraming: React.FC = () => {
 
   if (error && !frames.length) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center bg-white rounded-lg border border-gray-200 p-8 max-w-md shadow-md">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 text-red-500 mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#FDFCF9] p-4">
+        <div className="text-center bg-white rounded-[2.5rem] border border-gray-50 p-8 max-w-md shadow-xl">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 text-red-500 mb-6">
             <X className="h-8 w-8" />
           </div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">Something went wrong</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h3>
+          <p className="text-gray-500 font-medium mb-8">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors flex items-center mx-auto"
+            className="px-8 py-3 bg-brand-green text-white rounded-full font-bold hover:bg-emerald-600 transition-all flex items-center mx-auto shadow-lg shadow-emerald-100"
           >
             <RefreshCw className="h-4 w-4 mr-2" /> Try Again
           </button>
@@ -697,13 +815,13 @@ const UserPhotoFraming: React.FC = () => {
 
   if (!frames.length) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center bg-white rounded-lg border border-gray-200 p-8 max-w-md shadow-md">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 text-gray-400 mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#FDFCF9] p-4">
+        <div className="text-center bg-white rounded-[2.5rem] border border-gray-50 p-8 max-w-md shadow-xl">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 text-gray-400 mb-6">
             <Camera className="h-8 w-8" />
           </div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">No Active Frames</h3>
-          <p className="text-gray-600">
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">No Active Frames</h3>
+          <p className="text-gray-500 font-medium leading-relaxed">
             There are currently no active photo frames available.
             Please check back later or contact the administrator.
           </p>
@@ -788,25 +906,24 @@ const UserPhotoFraming: React.FC = () => {
                 </div>
               </div>
 
+              {/* Render Search Results with Memoized FrameCard */}
               {filteredFrames.length === 0 ? (
-                <div className="text-center bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 text-gray-400 mb-4">
-                    <Search className="h-8 w-8" />
+                <div className="text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-100">
+                  <div className="inline-flex items-center justify-center p-4 bg-white rounded-full shadow-sm mb-6">
+                    <Search className="h-8 w-8 text-gray-300" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">No matching frames found</h3>
-                  <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                    We couldn&apos;t find any frames matching &quot;{searchQuery}&quot;. Try adjusting your search terms or browse all available frames.
-                  </p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">No frames found</h3>
+                  <p className="text-gray-500 mb-8 font-medium">Try searching with a different keyword</p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                      className="px-6 py-2.5 bg-brand-green text-white rounded-full hover:bg-emerald-600 transition-colors font-bold shadow-lg shadow-emerald-100"
                     >
                       Show All Frames
                     </button>
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                      className="px-6 py-2.5 bg-white text-gray-700 rounded-full border border-gray-100 hover:bg-gray-50 transition-colors font-bold"
                     >
                       Clear Search
                     </button>
@@ -824,84 +941,15 @@ const UserPhotoFraming: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {filteredFrames.map((frame) => (
-                      <div
+                      <FrameCard
                         key={frame._id}
-                        className="group relative bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer border border-transparent hover:border-emerald-100 card-clip p-3 pb-6 flex flex-col"
-                        onClick={() => handleSelectFrame(frame)}
-                      >
-                        <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-gray-50">
-                          <NextImage
-                            src={frame.imageUrl}
-                            alt={frame.name}
-                            width={frame.dimensions.width}
-                            height={frame.dimensions.height}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                          />
-
-                          {/* Hover Overlay */}
-                          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
-                            <div className="bg-white px-6 py-2.5 rounded-full shadow-xl border border-gray-50">
-                              <span className="text-gray-900 font-bold text-sm">Create Now</span>
-                            </div>
-                          </div>
-
-                          {/* Action buttons */}
-                          <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <button
-                              onClick={(e) => handleCopyFrameLink(frame._id, e)}
-                              className="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 hover:scale-110"
-                              aria-label="Copy share link"
-                              title="Copy share link"
-                            >
-                              {frameCopySuccess[frame._id] ? (
-                                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                              ) : (
-                                <LinkIcon className="h-4 w-4 text-gray-600" />
-                              )}
-                            </button>
-                            <button
-                              onClick={(e) => toggleFavorite(frame._id, e)}
-                              className="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 hover:scale-110"
-                              aria-label={favoriteFrames.includes(frame._id) ? "Remove from favorites" : "Add to favorites"}
-                              title={favoriteFrames.includes(frame._id) ? "Remove from favorites" : "Add to favorites"}
-                            >
-                              <Heart
-                                className={`h-4 w-4 transition-colors ${favoriteFrames.includes(frame._id)
-                                  ? "text-red-500 fill-red-500"
-                                  : "text-gray-600 hover:text-red-500"
-                                  }`}
-                              />
-                            </button>
-                          </div>
-
-                          {/* Favorite indicator */}
-                          {favoriteFrames.includes(frame._id) && (
-                            <div className="absolute top-3 left-3">
-                              <div className="p-1.5 rounded-full bg-red-500 shadow-md">
-                                <Heart className="h-3 w-3 text-white fill-white" />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Card content */}
-                        <div className="mt-4 px-3 flex flex-col flex-1">
-                          <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-2 leading-tight">
-                            {frame.name}
-                          </h3>
-                          <div className="flex items-center justify-between mt-auto">
-                            <p className="text-sm font-medium text-gray-400">
-                              {frame.dimensions.width}x{frame.dimensions.height}
-                            </p>
-                            {frame.usageCount && (
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-green bg-emerald-50 px-2 py-0.5 rounded-md">
-                                {frame.usageCount} shared
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                        frame={frame}
+                        onSelect={handleSelectFrame}
+                        onCopyLink={handleCopyFrameLink}
+                        onToggleFavorite={toggleFavorite}
+                        isFavorite={favoriteFrames.includes(frame._id)}
+                        copySuccess={!!frameCopySuccess[frame._id]}
+                      />
                     ))}
                   </div>
                 </div>
@@ -919,38 +967,36 @@ const UserPhotoFraming: React.FC = () => {
                     </span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    {frames
-                      .filter(frame => favoriteFrames.includes(frame._id))
-                      .map((frame) => (
-                        <div
-                          key={`fav-${frame._id}`}
-                          className="group relative bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer border border-transparent hover:border-red-100 p-2 pb-4 flex flex-col"
-                          onClick={() => handleSelectFrame(frame)}
-                        >
-                          <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50">
-                            <NextImage
-                              src={frame.imageUrl}
-                              alt={frame.name}
-                              width={frame.dimensions.width}
-                              height={frame.dimensions.height}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
+                    {favoriteFramesList.map((frame) => (
+                      <div
+                        key={`fav-${frame._id}`}
+                        className="group relative bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer border border-transparent hover:border-red-100 p-2 pb-4 flex flex-col"
+                        onClick={() => handleSelectFrame(frame)}
+                      >
+                        <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50">
+                          <NextImage
+                            src={frame.imageUrl}
+                            alt={frame.name}
+                            width={300} // Small thumbnails for favorites
+                            height={300}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="lazy"
+                          />
 
-                            <div className="absolute top-2 left-2 z-20">
-                              <div className="p-1.5 rounded-full bg-red-500 shadow-lg">
-                                <Heart className="h-3 w-3 text-white fill-white" />
-                              </div>
+                          <div className="absolute top-2 left-2 z-20">
+                            <div className="p-1.5 rounded-full bg-red-500 shadow-lg">
+                              <Heart className="h-3 w-3 text-white fill-white" />
                             </div>
                           </div>
-
-                          <div className="mt-3 px-2">
-                            <h3 className="text-sm font-bold text-gray-900 truncate">
-                              {frame.name}
-                            </h3>
-                          </div>
                         </div>
-                      ))
-                    }
+
+                        <div className="mt-3 px-2">
+                          <h3 className="text-sm font-bold text-gray-900 truncate">
+                            {frame.name}
+                          </h3>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
