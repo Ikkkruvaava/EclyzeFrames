@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
         hostname: "tdrlshwtrcqxqzzqehxu.supabase.co",
         pathname: "/storage/v1/object/public/frames/**", // Specific to "frames" bucket
       },
+      {
+        protocol: "https",
+        hostname: "**.public.blob.vercel-storage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.vercel-storage.com",
+      },
 
     ],
   },

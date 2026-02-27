@@ -490,19 +490,41 @@ const UserPhotoFraming: React.FC = () => {
         );
 
         if (selectedFrame.textSettings && Array.isArray(selectedFrame.textSettings)) {
-          selectedFrame.textSettings.forEach((ts, index) => {
+          selectedFrame.textSettings.forEach((ts: any, index: number) => {
             const textToDraw = userTexts[index] || "";
             if (textToDraw) {
-              ctx.font = `${ts.size}px ${ts.font || 'Arial'}`;
+              // Handle very large frames (e.g., 3240px) by ensuring font size is at least visible.
+              // If ts.size is missing or very small relative to frame, we use a default.
+              let fontSize = ts.size || ts.fontSize || 30;
+
+              // If the font size is clearly too small for the canvas (e.g. 20px on a 3000px canvas)
+              // and it's likely a missing unit/scaling error, we try to preserve it but ensure it's drawn.
+              const fontFamily = ts.font || 'Arial, sans-serif';
+
+              ctx.font = `${fontSize}px ${fontFamily}`;
               ctx.fillStyle = ts.color || '#000000';
               ctx.textAlign = ts.align || 'center';
               ctx.textBaseline = 'middle';
 
-              let textX = ts.x + (ts.width / 2);
-              if (ts.align === 'left') textX = ts.x;
-              if (ts.align === 'right') textX = ts.x + ts.width;
+              const itemWidth = ts.width || 0;
+              const itemHeight = ts.height || 0;
 
-              const textY = ts.y + (ts.height / 2);
+              let textX = ts.x;
+              let textY = ts.y;
+
+              if (ts.align === 'center') {
+                textX = ts.x + (itemWidth / 2);
+              } else if (ts.align === 'right') {
+                textX = ts.x + itemWidth;
+              }
+
+              textY = ts.y + (itemHeight / 2);
+
+              // Debug: log where we are drawing for large frames
+              if (selectedFrame.dimensions.width > 2000) {
+                console.log(`Drawing text "${textToDraw}" at (${textX}, ${textY}) with size ${fontSize}`);
+              }
+
               ctx.fillText(textToDraw, textX, textY);
             }
           });

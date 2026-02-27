@@ -19,9 +19,13 @@ export interface FrameData {
     textSettings: Array<{
         x: number;
         y: number;
-        fontSize: number;
+        width: number;
+        height: number;
+        fontSize?: number; // kept for compatibility if needed
+        size: number;
         color: string;
         align: string;
+        font: string;
         placeholder?: string;
     }>;
     isActive: boolean;
@@ -47,9 +51,12 @@ const FrameSchema = new Schema({
     textSettings: [{
         x: Number,
         y: Number,
-        fontSize: Number,
+        width: Number,
+        height: Number,
+        size: Number,
         color: String,
         align: String,
+        font: String,
         placeholder: String
     }],
     isActive: { type: Boolean, default: true },

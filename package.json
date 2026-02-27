@@ -46,6 +46,7 @@
     "react-modal-sheet": "^4.0.1",
     "react-select": "^5.10.2",
     "react-toastify": "^11.0.5",
+    "sharp": "^0.34.5",
     "swiper": "^11.2.4",
     "tailwind-merge": "^3.0.2",
     "vaul": "^1.1.2",
