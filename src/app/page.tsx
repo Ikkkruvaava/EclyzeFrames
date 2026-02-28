@@ -547,9 +547,13 @@ const UserPhotoFraming: React.FC = () => {
     canvas.width = selectedFrame.dimensions.width * pixelRatio;
     canvas.height = selectedFrame.dimensions.height * pixelRatio;
 
-    // Set the canvas CSS dimensions for proper display
-    canvas.style.width = `${selectedFrame.dimensions.width}px`;
-    canvas.style.height = `${selectedFrame.dimensions.height}px`;
+    // Set the canvas CSS dimensions for responsive display
+    // using intrinsic aspect ratio while letting CSS handle bounds
+    canvas.style.width = 'auto';
+    canvas.style.height = 'auto';
+    canvas.style.maxWidth = '100%';
+    canvas.style.maxHeight = '70vh';
+    canvas.style.objectFit = 'contain';
 
     // Scale the context to account for the pixel ratio
     ctx.scale(pixelRatio, pixelRatio);
@@ -1300,6 +1304,8 @@ const UserPhotoFraming: React.FC = () => {
                     <canvas
                       ref={canvasRef}
                       style={{
+                        width: 'auto',
+                        height: 'auto',
                         maxWidth: '100%',
                         maxHeight: '70vh',
                         objectFit: 'contain'
