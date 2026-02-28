@@ -26,6 +26,7 @@ import {
 import NextImage from "next/image"; // Import Next.js Image as NextImage
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { BlinkBlur } from "react-loading-indicators";
 
 interface PlacementCoords {
   x: number;
@@ -828,9 +829,9 @@ const UserPhotoFraming: React.FC = () => {
   if (isLoading && currentStep === "select") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FDFCF9]">
-        <div className="text-center">
-          <div className="inline-block animate-spin h-12 w-12 border-4 border-gray-100 border-t-brand-green rounded-full mb-4"></div>
-          <p className="text-gray-900 text-lg font-bold">Loading frames...</p>
+        <div className="text-center flex flex-col items-center">
+          <BlinkBlur color="#32cd32" size="medium" text="" textColor="" />
+          <p className="text-gray-900 text-lg font-bold mt-6">Loading frames...</p>
         </div>
       </div>
     );
@@ -1380,8 +1381,8 @@ const UserPhotoFraming: React.FC = () => {
                   {isLoading && (
                     <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
                       <div className="flex flex-col items-center">
-                        <div className="inline-block animate-spin h-8 w-8 border-4 border-gray-300 border-t-blue-500 rounded-full mb-3"></div>
-                        <p className="text-gray-600 text-sm">Generating preview...</p>
+                        <BlinkBlur color="#32cd32" size="medium" text="" textColor="" />
+                        <p className="text-gray-600 text-sm mt-3">Generating preview...</p>
                       </div>
                     </div>
                   )}
