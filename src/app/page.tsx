@@ -17,9 +17,11 @@ import {
   Search,
   ChevronLeft,
   Eye,
-  Share,
   Link as LinkIcon,
-  Maximize2
+  Maximize2,
+  Star,
+  ChevronRight,
+  Share
 } from "lucide-react";
 import NextImage from "next/image"; // Import Next.js Image as NextImage
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
@@ -878,72 +880,126 @@ const UserPhotoFraming: React.FC = () => {
           {currentStep === "select" && (
             <div className="space-y-16 pt-12">
               {/* Hero Section */}
-              <div className="text-center max-w-4xl mx-auto mb-16 relative">
-                <div className="mb-4 inline-flex items-center px-4 py-1.5 rounded-full bg-white border border-gray-100 shadow-sm text-sm font-medium text-gray-600">
-                  <span className="mr-2">🎉</span> Best App for community frames
+              <div className="text-center max-[1200px]:max-w-4xl max-w-5xl mx-auto mb-20 relative pt-12">
+                <div
+                  className="mb-8 inline-flex items-center px-1.5 py-1.5 rounded-full bg-white border border-gray-100 shadow-sm text-sm font-medium text-gray-700 hover:shadow-md transition-shadow cursor-pointer mx-auto"
+                >
+                  <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-[11px] font-bold mr-3 tracking-wider uppercase">New</span>
+                  <span className="mr-2">Custom Frames</span>
+                  <ChevronRight className="h-4 w-4 text-gray-400 mr-1" />
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-[1.1] tracking-tight">
-                  SAFE WEB FOR <span className="text-brand-green">FRAMES</span> TO <br />
-                  LEARN AND GROW
+
+                <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-gray-900 mb-8 leading-[1.08] tracking-tight">
+                  A perfect framing system <br className="hidden md:block" />
+                  working like an <span className="text-brand-green bg-emerald-50/80 px-4 pt-1 pb-2 rounded-full inline-block mt-2 align-middle border border-emerald-100/50 shadow-sm">Organiser</span>
                 </h1>
-                <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-                  With Built In Customization And High Quality Rendering
+
+                <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
+                  Great communities deserve a system that does it all, from making custom frames and smooth rendering to helping you market and track engagements.
                 </p>
 
-                <div className="flex justify-center gap-4 mb-16">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-24">
                   <button
                     onClick={() => {
                       const el = document.getElementById('available-frames');
                       el?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="px-8 py-4 bg-brand-green text-white rounded-full font-bold text-lg hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-200"
+                    className="px-8 py-4 bg-gray-900 text-white rounded-full font-bold text-base hover:bg-black transition-all shadow-lg hover:shadow-xl flex items-center group"
                   >
-                    Start Creating
+                    <Star className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform text-white fill-white" />
+                    Start Framing
                   </button>
-                </div>
-
-                {/* Card Fan Display */}
-                <div className="relative h-64 md:h-80 w-full max-w-3xl mx-auto mb-20">
-                  <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center w-full h-full perspective-1000">
-                    {frames.slice(0, 5).map((frame, i) => (
-                      <div
-                        key={`fan-${frame._id}`}
-                        className="absolute w-48 h-48 md:w-64 md:h-64 bg-white rounded-3xl shadow-xl border-4 border-white overflow-hidden transition-all duration-500 hover:scale-110 hover:z-50 card-clip"
-                        style={{
-                          transform: `translateX(${(i - 2) * 60}px) rotate(${(i - 2) * 8}deg) translateY(${Math.abs(i - 2) * 10}px)`,
-                          zIndex: 10 - Math.abs(i - 2)
-                        }}
-                      >
-                        <NextImage
-                          src={frame.imageUrl}
-                          alt={frame.name}
-                          fill
-                          className="object-cover"
-                        />
+                  {/* <button
+                    onClick={() => {
+                      const el = document.getElementById('available-frames');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="px-8 py-4 bg-white text-gray-900 border border-gray-200 rounded-full font-bold text-base hover:bg-gray-50 transition-all shadow-sm flex items-center group"
+                  >
+                    <div className="flex -space-x-2 mr-3">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 border-2 border-white flex items-center justify-center text-sm shadow-sm relative overflow-hidden">
+                        <span className="text-lg">🧑</span>
                       </div>
-                    ))}
+                      <div className="w-8 h-8 rounded-full bg-emerald-100 border-2 border-white flex items-center justify-center text-sm shadow-sm relative overflow-hidden z-10">
+                        <span className="text-lg">👩</span>
+                      </div>
+                    </div>
+                    Book a Call
+                  </button> */}
+                </div>
+
+                {/* Features Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-20 p-4">
+                  <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left -rotate-3">
+                    <div className="bg-emerald-50 w-full rounded-2xl p-6 mb-6 flex items-center justify-center border border-emerald-100/50 aspect-[4/3]">
+                      <div className="bg-brand-green text-white px-6 py-2.5 rounded-full font-bold shadow-[0_8px_20px_rgb(16,185,129,0.3)]">
+                        Create Event
+                      </div>
+                    </div>
+                    <p className="text-gray-400 text-sm font-bold tracking-wider uppercase mb-2">Step 1</p>
+                    <h3 className="text-xl font-bold text-gray-900 leading-snug">Set up your frames in minutes: name it, style it, done.</h3>
+                  </div>
+
+                  <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left mb-6">
+                    <div className="bg-gray-50 w-full rounded-2xl p-6 mb-6 flex items-center justify-center border border-gray-100 aspect-[4/3] relative">
+                      <div className="absolute top-8 left-4 right-8 bg-white shadow-md rounded-2xl p-3 flex items-center gap-3 border border-gray-50">
+                        <div className="w-6 h-6 rounded-full bg-blue-100 font-bold flex items-center justify-center text-[10px]">E</div>
+                        <div><div className="h-1.5 w-16 bg-gray-200 rounded"></div><div className="h-1.5 w-10 bg-gray-100 rounded mt-2"></div></div>
+                      </div>
+                      <div className="absolute bottom-6 left-8 right-4 bg-white shadow-md rounded-2xl p-3 flex items-center gap-3 border border-gray-50 z-10 justify-between">
+                        <div><div className="h-1.5 w-20 bg-gray-200 rounded"></div><div className="h-1.5 w-12 bg-emerald-100 rounded mt-2"></div></div>
+                        <CheckCircle2 className="h-4 w-4 text-brand-green" />
+                      </div>
+                    </div>
+                    <p className="text-gray-400 text-sm font-bold tracking-wider uppercase mb-2">Step 2</p>
+                    <h3 className="text-xl font-bold text-gray-900 leading-snug">Add pictures, texts, and download options like a pro.</h3>
+                  </div>
+
+                  <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left rotate-3">
+                    <div className="bg-emerald-50 w-full rounded-2xl p-6 mb-6 flex items-end justify-center border border-emerald-100/50 gap-3 aspect-[4/3] pb-8 pt-12 relative overflow-hidden">
+                      <div className="absolute top-1/2 left-0 right-0 border-b border-dashed border-emerald-200"></div>
+                      <div className="w-10 bg-gray-200/50 rounded-lg h-1/3 relative z-10"></div>
+                      <div className="w-10 bg-gray-200/50 rounded-lg h-1/2 relative z-10"></div>
+                      <div className="w-10 bg-brand-green rounded-lg h-full shadow-[0_0_20px_rgb(16,185,129,0.3)] relative z-10"></div>
+                      <div className="w-10 bg-gray-200/50 rounded-lg h-1/4 relative z-10"></div>
+                    </div>
+                    <p className="text-gray-400 text-sm font-bold tracking-wider uppercase mb-2">Step 3</p>
+                    <h3 className="text-xl font-bold text-gray-900 leading-snug">Share your community link and watch engagement fly in.</h3>
                   </div>
                 </div>
 
-                <div className="relative max-w-xl mx-auto mt-20">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Search frames by name..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full py-4 px-6 pl-14 border-0 rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-green transition-all duration-300 bg-white placeholder:text-gray-400 text-lg"
-                    />
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery("")}
-                        className="absolute right-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-gray-600 transition-colors"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-                    )}
+                {/* Sub-hero text or Quick setup testimonial */}
+                {/* <div className="max-w-3xl mx-auto text-center border-t border-gray-100 pt-16 mb-10">
+                  <div className="w-14 h-14 rounded-full bg-gray-50 mx-auto mb-6 flex items-center justify-center border border-gray-200 shadow-sm overflow-hidden relative">
+                    <span className="text-2xl">👩‍💼</span>
                   </div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-3">Quick and Easy Setup</h2>
+                  <p className="text-base text-gray-600 font-medium leading-relaxed max-w-xl mx-auto">
+                    &quot;We&apos;ve scaled to thousands of frame shares daily &mdash; this platform&apos;s
+                    dashboard is the only thing that keeps us sane.&quot;
+                  </p>
+                  <p className="text-xs text-gray-400 mt-4 font-bold tracking-wide uppercase">- Event Manager, SUHBA Partners</p>
+                </div> */}
+              </div>
+
+              <div className="relative max-w-xl mx-auto mt-20">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search frames by name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full py-4 px-6 pl-14 border-0 rounded-full shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-green transition-all duration-300 bg-white placeholder:text-gray-400 text-lg"
+                  />
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -1562,7 +1618,7 @@ const UserPhotoFraming: React.FC = () => {
             </div>
           )}
         </div>
-      </main>
+      </main >
 
       {(currentStep === "select" || currentStep === "upload") && (
         <section className="bg-white border-t border-gray-50 py-20 mt-20">
@@ -1628,7 +1684,7 @@ const UserPhotoFraming: React.FC = () => {
           </div>
         </div>
       </footer> */}
-    </div>
+    </div >
   );
 };
 
