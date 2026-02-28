@@ -881,7 +881,7 @@ const UserPhotoFraming: React.FC = () => {
           {currentStep === "select" && (
             <div className="space-y-16 pt-12">
               {/* Hero Section */}
-              <div className="text-center max-[1200px]:max-w-4xl max-w-5xl mx-auto mb-20 relative pt-12">
+              <div className="text-center max-[1200px]:max-w-4xl max-w-5xl mx-auto mb-12 md:mb-20 relative pt-8 md:pt-12">
                 <div
                   className="mb-8 inline-flex items-center px-1.5 py-1.5 rounded-full bg-white border border-gray-100 shadow-sm text-sm font-medium text-gray-700 hover:shadow-md transition-shadow cursor-pointer mx-auto"
                 >
@@ -890,16 +890,16 @@ const UserPhotoFraming: React.FC = () => {
                   <ChevronRight className="h-4 w-4 text-gray-400 mr-1" />
                 </div>
 
-                <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-gray-900 mb-8 leading-[1.08] tracking-tight">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-gray-900 mb-6 md:mb-8 leading-[1.15] md:leading-[1.08] tracking-tight px-2">
                   A perfect framing system <br className="hidden md:block" />
-                  working like an <span className="text-brand-green bg-emerald-50/80 px-4 pt-1 pb-2 rounded-full inline-block mt-2 align-middle border border-emerald-100/50 shadow-sm">Organiser</span>
+                  working like an <span className="text-brand-green bg-emerald-50/80 px-3 md:px-4 pt-1 pb-1.5 md:pb-2 rounded-full inline-block mt-2 align-middle border border-emerald-100/50 shadow-sm break-words max-w-full">Organiser</span>
                 </h1>
 
-                <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
+                <p className="text-base sm:text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10 md:mb-12 leading-relaxed font-medium px-0 sm:px-4">
                   Great communities deserve a system that does it all, from making custom frames and smooth rendering to helping you market and track engagements.
                 </p>
 
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-24">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-14 md:mb-24">
                   <button
                     onClick={() => {
                       const el = document.getElementById('available-frames');
@@ -930,8 +930,8 @@ const UserPhotoFraming: React.FC = () => {
                 </div>
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-20 p-4">
-                  <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left -rotate-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto mb-12 md:mb-20 p-2 sm:p-4">
+                  <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left transform md:-rotate-3">
                     <div className="bg-emerald-50 w-full rounded-2xl p-6 mb-6 flex items-center justify-center border border-emerald-100/50 aspect-[4/3]">
                       <div className="bg-brand-green text-white px-6 py-2.5 rounded-full font-bold shadow-[0_8px_20px_rgb(16,185,129,0.3)]">
                         Create Event
@@ -941,7 +941,7 @@ const UserPhotoFraming: React.FC = () => {
                     <h3 className="text-xl font-bold text-gray-900 leading-snug">Set up your frames in minutes: name it, style it, done.</h3>
                   </div>
 
-                  <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left mb-6">
+                  <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left">
                     <div className="bg-gray-50 w-full rounded-2xl p-6 mb-6 flex items-center justify-center border border-gray-100 aspect-[4/3] relative">
                       <div className="absolute top-8 left-4 right-8 bg-white shadow-md rounded-2xl p-3 flex items-center gap-3 border border-gray-50">
                         <div className="w-6 h-6 rounded-full bg-blue-100 font-bold flex items-center justify-center text-[10px]">E</div>
@@ -956,7 +956,7 @@ const UserPhotoFraming: React.FC = () => {
                     <h3 className="text-xl font-bold text-gray-900 leading-snug">Add pictures, texts, and download options like a pro.</h3>
                   </div>
 
-                  <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left rotate-3">
+                  <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col text-left transform md:rotate-3">
                     <div className="bg-emerald-50 w-full rounded-2xl p-6 mb-6 flex items-end justify-center border border-emerald-100/50 gap-3 aspect-[4/3] pb-8 pt-12 relative overflow-hidden">
                       <div className="absolute top-1/2 left-0 right-0 border-b border-dashed border-emerald-200"></div>
                       <div className="w-10 bg-gray-200/50 rounded-lg h-1/3 relative z-10"></div>
