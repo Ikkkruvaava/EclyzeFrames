@@ -598,6 +598,10 @@ const UserPhotoFraming: React.FC = () => {
         // Clear the entire canvas
         ctx.clearRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
 
+        // Fill background with white to avoid black transparent areas in JPEG
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+
         if (selectedFrame.hasImageArea !== false && selectedFrame.placementCoords) {
           const placement = selectedFrame.placementCoords;
           // Draw the user image at exact placement coordinates
@@ -698,8 +702,8 @@ const UserPhotoFraming: React.FC = () => {
 
     setIsProcessing(true);
     try {
-      // Use PNG format with maximum quality
-      const dataUrl = canvasRef.current.toDataURL("image/png", 1.0);
+      // Use JPEG format with 0.9 quality for drastic size compression (PNG gives 40MB+, JPG gives 1-3MB)
+      const dataUrl = canvasRef.current.toDataURL("image/jpeg", 0.9);
       setFinalImage(dataUrl);
 
       const usageTracked = await trackFrameUsage(selectedFrame._id);
@@ -1470,7 +1474,7 @@ const UserPhotoFraming: React.FC = () => {
 
                       <a
                         href={finalImage}
-                        download={`framed-photo-${selectedFrame.name.replace(/\s+/g, '-').toLowerCase()}.png`}
+                        download={`framed-photo-${selectedFrame.name.replace(/\s+/g, '-').toLowerCase()}.jpg`}
                         className="w-full py-4 px-4 bg-brand-green text-white rounded-full font-bold mb-4 hover:bg-emerald-600 transition-all flex items-center justify-center shadow-lg hover:shadow-emerald-100"
                       >
                         <Save className="h-5 w-5 mr-2" />
