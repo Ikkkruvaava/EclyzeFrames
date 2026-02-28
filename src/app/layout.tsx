@@ -3,6 +3,7 @@ import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { LoadingProvider } from "@/context/LoadingContext";
 import ClientHeader from "@/components/ClientHeader";
+import SessionProvider from "@/components/SessionProvider";
 import Script from "next/script";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
@@ -110,7 +111,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           `}
         </Script>
         <ClientHeader />
-        <LoadingProvider>{children}</LoadingProvider>
+        <SessionProvider>
+          <LoadingProvider>{children}</LoadingProvider>
+        </SessionProvider>
       </body>
     </html>
   );

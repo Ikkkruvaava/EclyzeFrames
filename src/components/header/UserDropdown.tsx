@@ -3,12 +3,11 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const avatarPath = "/images/avathar/avathar3.svg";
-  const router = useRouter();
 
   const data = {
     user: {
@@ -29,11 +28,11 @@ export default function UserDropdown() {
 
   const handleSignOut = async () => {
     try {
-      // Force redirect since sign out is removed
-      router.push('/');
+      await signOut({ redirect: false });
+      window.location.href = '/';
     } catch (error) {
       console.error('Sign-out failed:', error);
-      router.push('/');
+      window.location.href = '/';
     }
   };
 
