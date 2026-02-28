@@ -1434,7 +1434,7 @@ const UserPhotoFraming: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentStep(selectedFrame.hasImageArea === false ? "select" : "crop")}
-                    className="px-8 py-3 bg-white border border-gray-100 text-gray-700 rounded-full font-bold shadow-sm hover:bg-gray-50 transition-all flex items-center"
+                    className="px-4 py-3 bg-white border border-gray-100 text-gray-700 rounded-full font-bold shadow-sm hover:bg-gray-50 transition-all flex items-center"
                   >
                     <ChevronLeft className="h-5 w-5 mr-2" /> Back
                   </button>
@@ -1442,7 +1442,7 @@ const UserPhotoFraming: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleGenerateImage}
-                    className="px-8 py-3 bg-brand-green text-white rounded-full font-bold shadow-lg hover:bg-emerald-600 hover:shadow-emerald-100 transition-all flex items-center"
+                    className="px-4 py-3 bg-brand-green text-white rounded-full font-bold shadow-lg hover:bg-emerald-600 hover:shadow-emerald-100 transition-all flex items-center"
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
@@ -1452,7 +1452,7 @@ const UserPhotoFraming: React.FC = () => {
                       </>
                     ) : (
                       <>
-                        Generate Image <ArrowRight className="h-5 w-5 ml-2" />
+                        Generate<ArrowRight className="h-5 w-5 ml-2" />
                       </>
                     )}
                   </button>
