@@ -191,6 +191,12 @@ const UserPhotoFraming: React.FC = () => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const userImgRef = useRef<HTMLImageElement>(null);
+  const cachedRenderDeps = useRef<{
+    frameUrl: string | null;
+    userUrl: string | null;
+    frameImg: HTMLImageElement | null;
+    userImg: HTMLImageElement | null;
+  }>({ frameUrl: null, userUrl: null, frameImg: null, userImg: null });
   const urlProcessedRef = useRef<boolean>(false);
 
 
@@ -538,8 +544,6 @@ const UserPhotoFraming: React.FC = () => {
 
     if (!ctx) return;
 
-    setIsLoading(true);
-
     // Get device pixel ratio for high-DPI displays
     const pixelRatio = window.devicePixelRatio || 1;
 
@@ -562,21 +566,107 @@ const UserPhotoFraming: React.FC = () => {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
 
+    const drawCanvas = (frameImage: HTMLImageElement, userImage: HTMLImageElement | null) => {
+      // Clear the entire canvas
+      ctx.clearRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+
+      // Fill background with white to avoid black transparent areas in JPEG
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+
+      if (selectedFrame.hasImageArea !== false && selectedFrame.placementCoords && userImage) {
+        const placement = selectedFrame.placementCoords;
+        // Draw the user image at exact placement coordinates
+        ctx.drawImage(
+          userImage,
+          0, 0, userImage.width, userImage.height,
+          placement.x, placement.y, placement.width, placement.height
+        );
+      }
+
+      // Draw the frame overlay
+      ctx.drawImage(
+        frameImage,
+        0, 0,
+        canvas.width / pixelRatio,
+        canvas.height / pixelRatio
+      );
+
+      if (selectedFrame.textSettings && Array.isArray(selectedFrame.textSettings)) {
+        selectedFrame.textSettings.forEach((ts: any, index: number) => {
+          const textToDraw = debouncedTexts[index] || "";
+          if (textToDraw) {
+            // Handle very large frames (e.g., 3240px) by ensuring font size is at least visible.
+            // If ts.size is missing or very small relative to frame, we use a default.
+            let fontSize = ts.size || ts.fontSize || 30;
+
+            // If the font size is clearly too small for the canvas (e.g. 20px on a 3000px canvas)
+            // and it's likely a missing unit/scaling error, we try to preserve it but ensure it's drawn.
+            const fontFamily = ts.font || 'Arial, sans-serif';
+
+            ctx.font = `${fontSize}px ${fontFamily}`;
+            ctx.fillStyle = ts.color || '#000000';
+            ctx.textAlign = ts.align || 'center';
+            ctx.textBaseline = 'middle';
+
+            const itemWidth = ts.width || 0;
+            const itemHeight = ts.height || 0;
+
+            let textX = ts.x;
+            let textY = ts.y;
+
+            if (ts.align === 'center') {
+              textX = ts.x + (itemWidth / 2);
+            } else if (ts.align === 'right') {
+              textX = ts.x + itemWidth;
+            }
+
+            textY = ts.y + (itemHeight / 2);
+
+            // Debug: log where we are drawing for large frames
+            if (selectedFrame.dimensions.width > 2000) {
+              console.log(`Drawing text "${textToDraw}" at (${textX}, ${textY}) with size ${fontSize}`);
+            }
+
+            ctx.fillText(textToDraw, textX, textY);
+          }
+        });
+      }
+    };
+
+    const frameUrl = selectedFrame.imageUrl;
+    const userUrl = selectedFrame.hasImageArea !== false && croppedImage ? croppedImage : null;
+
+    // Check if we already have the images loaded from previous renders
+    const isSameImages =
+      cachedRenderDeps.current.frameUrl === frameUrl &&
+      cachedRenderDeps.current.userUrl === userUrl &&
+      cachedRenderDeps.current.frameImg !== null;
+
+    if (isSameImages) {
+      // Images haven't changed (likely just text change), just do a sync re-draw
+      drawCanvas(cachedRenderDeps.current.frameImg!, cachedRenderDeps.current.userImg);
+      return;
+    }
+
+    // Only set loading true if images actually need to be loaded
+    setIsLoading(true);
+
     const frameImg = new Image();
     const userImg = new Image();
 
     frameImg.crossOrigin = "anonymous";
     userImg.crossOrigin = "anonymous";
 
-    frameImg.src = selectedFrame.imageUrl;
-    if (selectedFrame.hasImageArea !== false && croppedImage) {
-      userImg.src = croppedImage;
+    frameImg.src = frameUrl;
+    if (userUrl) {
+      userImg.src = userUrl;
     }
 
     const loadImages = () => {
       return new Promise<void>((resolve, reject) => {
         let loadedCount = 0;
-        const totalToLoad = (selectedFrame.hasImageArea !== false && croppedImage) ? 2 : 1;
+        const totalToLoad = userUrl ? 2 : 1;
 
         const onLoad = () => {
           loadedCount++;
@@ -584,7 +674,7 @@ const UserPhotoFraming: React.FC = () => {
         };
 
         frameImg.onload = onLoad;
-        if (selectedFrame.hasImageArea !== false && croppedImage) {
+        if (userUrl) {
           userImg.onload = onLoad;
           userImg.onerror = () => reject(new Error("Failed to load user image"));
         }
@@ -595,72 +685,15 @@ const UserPhotoFraming: React.FC = () => {
 
     loadImages()
       .then(() => {
-        // Clear the entire canvas
-        ctx.clearRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
-
-        // Fill background with white to avoid black transparent areas in JPEG
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
-
-        if (selectedFrame.hasImageArea !== false && selectedFrame.placementCoords) {
-          const placement = selectedFrame.placementCoords;
-          // Draw the user image at exact placement coordinates
-          ctx.drawImage(
-            userImg,
-            0, 0, userImg.width, userImg.height,
-            placement.x, placement.y, placement.width, placement.height
-          );
-        }
-
-        // Draw the frame overlay
-        ctx.drawImage(
+        // Cache images for next effect run
+        cachedRenderDeps.current = {
+          frameUrl,
+          userUrl,
           frameImg,
-          0, 0,
-          canvas.width / pixelRatio,
-          canvas.height / pixelRatio
-        );
+          userImg: userUrl ? userImg : null
+        };
 
-        if (selectedFrame.textSettings && Array.isArray(selectedFrame.textSettings)) {
-          selectedFrame.textSettings.forEach((ts: any, index: number) => {
-            const textToDraw = userTexts[index] || "";
-            if (textToDraw) {
-              // Handle very large frames (e.g., 3240px) by ensuring font size is at least visible.
-              // If ts.size is missing or very small relative to frame, we use a default.
-              let fontSize = ts.size || ts.fontSize || 30;
-
-              // If the font size is clearly too small for the canvas (e.g. 20px on a 3000px canvas)
-              // and it's likely a missing unit/scaling error, we try to preserve it but ensure it's drawn.
-              const fontFamily = ts.font || 'Arial, sans-serif';
-
-              ctx.font = `${fontSize}px ${fontFamily}`;
-              ctx.fillStyle = ts.color || '#000000';
-              ctx.textAlign = ts.align || 'center';
-              ctx.textBaseline = 'middle';
-
-              const itemWidth = ts.width || 0;
-              const itemHeight = ts.height || 0;
-
-              let textX = ts.x;
-              let textY = ts.y;
-
-              if (ts.align === 'center') {
-                textX = ts.x + (itemWidth / 2);
-              } else if (ts.align === 'right') {
-                textX = ts.x + itemWidth;
-              }
-
-              textY = ts.y + (itemHeight / 2);
-
-              // Debug: log where we are drawing for large frames
-              if (selectedFrame.dimensions.width > 2000) {
-                console.log(`Drawing text "${textToDraw}" at (${textX}, ${textY}) with size ${fontSize}`);
-              }
-
-              ctx.fillText(textToDraw, textX, textY);
-            }
-          });
-        }
-
+        drawCanvas(frameImg, userUrl ? userImg : null);
         setIsLoading(false);
       })
       .catch((error) => {
