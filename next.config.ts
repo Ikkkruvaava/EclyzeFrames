@@ -66,6 +66,11 @@ const nextConfig: NextConfig = {
     ]
   },
   /* config options here */
+  poweredByHeader: false,
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "react-icons", "framer-motion", "@headlessui/react"],
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
