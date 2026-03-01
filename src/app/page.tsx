@@ -16,13 +16,12 @@ import {
   CheckCircle2,
   Search,
   ChevronLeft,
-  Eye,
   Link as LinkIcon,
   Maximize2,
   Star,
   ChevronRight,
   Share,
-  MessageCircle
+  Zap
 } from "lucide-react";
 import NextImage from "next/image"; // Import Next.js Image as NextImage
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
@@ -1710,18 +1709,16 @@ const UserPhotoFraming: React.FC = () => {
       </footer> */}
 
       {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/916238661924"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:shadow-[0_8px_30px_rgb(37,211,102,0.4)] hover:-translate-y-1 transition-all duration-300 z-50 flex items-center justify-center group border-2 border-white"
-        aria-label="Contact us on WhatsApp"
+      <Link
+        href="/pricing"
+        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-emerald-600 text-white p-4 rounded-full shadow-2xl hover:shadow-[0_8px_30px_rgb(16,185,129,0.4)] hover:-translate-y-1 transition-all duration-300 z-50 flex items-center justify-center group border-2 border-white ring-4 ring-emerald-50"
+        aria-label="Check Pricing"
       >
-        <MessageCircle className="h-6 w-6 md:h-7 md:w-7" />
+        <Zap className="h-6 w-6 md:h-7 md:w-7 fill-white" />
         <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 ease-in-out font-bold text-sm md:text-base">
-          Chat with us
+          Check Pricing
         </span>
-      </a>
+      </Link>
     </div >
   );
 };
