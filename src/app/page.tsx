@@ -28,6 +28,7 @@ import NextImage from "next/image"; // Import Next.js Image as NextImage
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { BlinkBlur } from "react-loading-indicators";
+import Link from "next/link";
 
 interface PlacementCoords {
   x: number;
@@ -883,13 +884,14 @@ const UserPhotoFraming: React.FC = () => {
             <div className="space-y-16 pt-12">
               {/* Hero Section */}
               <div className="text-center max-[1200px]:max-w-4xl max-w-5xl mx-auto mb-12 md:mb-20 relative pt-8 md:pt-12">
-                <div
+                <Link
+                  href="/pricing"
                   className="mb-8 inline-flex items-center px-1.5 py-1.5 rounded-full bg-white border border-gray-100 shadow-sm text-sm font-medium text-gray-700 hover:shadow-md transition-shadow cursor-pointer mx-auto"
                 >
                   <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-[11px] font-bold mr-3 tracking-wider uppercase">New</span>
                   <span className="mr-2">Custom Frames</span>
                   <ChevronRight className="h-4 w-4 text-gray-400 mr-1" />
-                </div>
+                </Link>
 
                 <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-bold text-gray-900 mb-6 md:mb-8 leading-[1.15] md:leading-[1.08] tracking-tight px-2">
                   A perfect framing system <br className="hidden md:block" />
