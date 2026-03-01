@@ -21,7 +21,8 @@ import {
   Maximize2,
   Star,
   ChevronRight,
-  Share
+  Share,
+  MessageCircle
 } from "lucide-react";
 import NextImage from "next/image"; // Import Next.js Image as NextImage
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
@@ -1438,7 +1439,7 @@ const UserPhotoFraming: React.FC = () => {
                   )}
                 </div>
 
-                <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="bg-white rounded-lg p-4 border border-gray-200">
                     <h3 className="text-base font-medium text-gray-700 mb-3 flex items-center">
                       <Eye className="h-4 w-4 mr-2 text-blue-500" />
@@ -1476,7 +1477,7 @@ const UserPhotoFraming: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                </div>
+                </div> */}
 
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-sm text-red-700 flex items-start">
@@ -1705,6 +1706,20 @@ const UserPhotoFraming: React.FC = () => {
           </div>
         </div>
       </footer> */}
+
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/916238661924"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:shadow-[0_8px_30px_rgb(37,211,102,0.4)] hover:-translate-y-1 transition-all duration-300 z-50 flex items-center justify-center group border-2 border-white"
+        aria-label="Contact us on WhatsApp"
+      >
+        <MessageCircle className="h-6 w-6 md:h-7 md:w-7" />
+        <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 ease-in-out font-bold text-sm md:text-base">
+          Chat with us
+        </span>
+      </a>
     </div >
   );
 };
