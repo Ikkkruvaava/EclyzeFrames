@@ -14,6 +14,7 @@ export interface TextSettings {
     size: number;
     color: string;
     align?: "left" | "center" | "right";
+    label?: string;
 }
 
 export interface Frame {

@@ -27,6 +27,7 @@ export interface FrameData {
         align: string;
         font: string;
         placeholder?: string;
+        label?: string;
     }>;
     isActive: boolean;
     usageCount: number;
@@ -57,7 +58,8 @@ const FrameSchema = new Schema({
         color: String,
         align: String,
         font: String,
-        placeholder: String
+        placeholder: String,
+        label: String
     }],
     isActive: { type: Boolean, default: true },
     usageCount: { type: Number, default: 0 },
@@ -71,7 +73,10 @@ const FrameSchema = new Schema({
     }
 });
 
-const Frame = models.Frame || model('Frame', FrameSchema);
+if (models.Frame) {
+    delete models.Frame;
+}
+const Frame = model('Frame', FrameSchema);
 
 export async function initDb() {
     await dbConnect();

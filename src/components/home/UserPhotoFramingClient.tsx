@@ -550,19 +550,21 @@ const UserPhotoFramingClient: React.FC = () => {
 
                                 <div className="mt-8 space-y-6">
                                     <h4 className="text-lg font-bold text-gray-900">Personalize</h4>
-                                    {selectedFrame.textSettings.map((_, index) => (
-                                        <input
-                                            key={index}
-                                            type="text"
-                                            value={userTexts[index] || ''}
-                                            onChange={(e) => {
-                                                const newTexts = [...userTexts];
-                                                newTexts[index] = e.target.value;
-                                                setUserTexts(newTexts);
-                                            }}
-                                            placeholder="Enter text here..."
-                                            className="w-full px-6 py-4 bg-[#FDFCF9] border-0 rounded-2xl shadow-inner focus:ring-2 focus:ring-brand-green transition-all"
-                                        />
+                                    {selectedFrame.textSettings.map((ts, index) => (
+                                        <div key={index} className="space-y-2">
+                                            {ts.label && <label className="block text-sm font-bold text-gray-700 ml-1">{ts.label}</label>}
+                                            <input
+                                                type="text"
+                                                value={userTexts[index] || ''}
+                                                onChange={(e) => {
+                                                    const newTexts = [...userTexts];
+                                                    newTexts[index] = e.target.value;
+                                                    setUserTexts(newTexts);
+                                                }}
+                                                placeholder={ts.label || "Enter text here..."}
+                                                className="w-full px-6 py-4 bg-[#FDFCF9] border-0 rounded-2xl shadow-inner focus:ring-2 focus:ring-brand-green transition-all"
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -624,19 +626,21 @@ const UserPhotoFramingClient: React.FC = () => {
                         </div>
                         <div className="my-4 space-y-3">
                             <h4 className="text-lg font-bold text-gray-900">Personalize</h4>
-                            {selectedFrame.textSettings.map((_, index) => (
-                                <input
-                                    key={index}
-                                    type="text"
-                                    value={userTexts[index] || ''}
-                                    onChange={(e) => {
-                                        const newTexts = [...userTexts];
-                                        newTexts[index] = e.target.value;
-                                        setUserTexts(newTexts);
-                                    }}
-                                    placeholder="Enter text here..."
-                                    className="w-full px-6 py-4 bg-[#FDFCF9] border-0 rounded-2xl shadow-inner focus:ring-2 focus:ring-brand-green transition-all"
-                                />
+                            {selectedFrame.textSettings.map((ts, index) => (
+                                <div key={index} className="space-y-2">
+                                    {ts.label && <label className="block text-sm font-bold text-gray-700 ml-1">{ts.label}</label>}
+                                    <input
+                                        type="text"
+                                        value={userTexts[index] || ''}
+                                        onChange={(e) => {
+                                            const newTexts = [...userTexts];
+                                            newTexts[index] = e.target.value;
+                                            setUserTexts(newTexts);
+                                        }}
+                                        placeholder={ts.label || "Enter text here..."}
+                                        className="w-full px-6 py-4 bg-[#FDFCF9] border-0 rounded-2xl shadow-inner focus:ring-2 focus:ring-brand-green transition-all"
+                                    />
+                                </div>
                             ))}
                         </div>
                         <div className="flex justify-between mt-8">

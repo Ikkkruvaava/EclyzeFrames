@@ -44,6 +44,7 @@ interface TextSettings {
   size: number;
   color: string;
   align: "left" | "center" | "right";
+  label?: string;
 }
 
 interface EditorData {
@@ -196,6 +197,7 @@ export default function CreateFramePage() {
         size: 32,
         color: "#ffffff",
         align: "center",
+        label: "Text Field",
       },
     ],
   });
@@ -502,7 +504,7 @@ export default function CreateFramePage() {
     setEditorData(prev => ({
       ...prev,
       textSettings: [...prev.textSettings, {
-        x: 100, y: 100, width: 200, height: 50, font: "Arial", size: 24, color: "#ffffff", align: "center"
+        x: 100, y: 100, width: 200, height: 50, font: "Arial", size: 24, color: "#ffffff", align: "center", label: `Text Field ${prev.textSettings.length + 1}`
       }]
     }));
     setActiveTextIndex(editorData.textSettings.length);
@@ -772,6 +774,21 @@ export default function CreateFramePage() {
                           </button>
                         ))}
                       </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Input Label</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Your Name"
+                        value={editorData.textSettings[activeTextIndex]?.label || ""}
+                        onChange={(e) => setEditorData(prev => {
+                          const next = [...prev.textSettings];
+                          next[activeTextIndex] = { ...next[activeTextIndex], label: e.target.value };
+                          return { ...prev, textSettings: next };
+                        })}
+                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm font-bold ring-1 ring-gray-100 dark:ring-gray-700 outline-none"
+                      />
                     </div>
                   </div>
                 </div>
