@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Majalla';
+  src: url('/fonts/majalla-reguler.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MajallaB';
+  src: url('/fonts/majalla-bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
 @layer base {
   body {
     @apply bg-[#FDFCF9] text-gray-900;

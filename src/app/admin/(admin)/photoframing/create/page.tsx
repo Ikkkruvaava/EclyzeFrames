@@ -750,7 +750,7 @@ export default function CreateFramePage() {
                           })}
                           className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm font-bold ring-1 ring-gray-100 dark:ring-gray-700 outline-none"
                         >
-                          {["Arial", "Times New Roman", "Impact", "Georgia", "Verdana"].map(f => <option key={f} value={f}>{f}</option>)}
+                          {["Arial", "Times New Roman", "Impact", "Georgia", "Verdana", "Majalla", "MajallaB"].map(f => <option key={f} value={f}>{f}</option>)}
                         </select>
                       </div>
                     </div>

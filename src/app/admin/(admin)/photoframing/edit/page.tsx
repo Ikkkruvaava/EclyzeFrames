@@ -704,22 +704,58 @@ function EditFrameWrapper() {
                         </div>
                       ))}
                     </div>
-                    <div className="grid grid-cols-2 gap-3 pb-2">
-                      <div>
-                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Color</label>
-                        <input type="color" value={editorData.textSettings[activeTextIndex]?.color} onChange={(e) => setEditorData(prev => {
-                          const next = [...prev.textSettings];
-                          next[activeTextIndex] = { ...next[activeTextIndex], color: e.target.value };
-                          return { ...prev, textSettings: next };
-                        })} className="w-full h-10 p-1 bg-gray-50 rounded-xl" />
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Font Color</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={editorData.textSettings[activeTextIndex]?.color || "#ffffff"}
+                          onChange={(e) => setEditorData(prev => {
+                            const next = [...prev.textSettings];
+                            next[activeTextIndex] = { ...next[activeTextIndex], color: e.target.value };
+                            return { ...prev, textSettings: next };
+                          })}
+                          className="w-12 h-10 p-1 bg-gray-50 dark:bg-gray-800 border-none rounded-xl"
+                        />
+                        <input
+                          type="text"
+                          value={editorData.textSettings[activeTextIndex]?.color}
+                          onChange={(e) => setEditorData(prev => {
+                            const next = [...prev.textSettings];
+                            next[activeTextIndex] = { ...next[activeTextIndex], color: e.target.value };
+                            return { ...prev, textSettings: next };
+                          })}
+                          className="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm font-mono font-bold ring-1 ring-gray-100 dark:ring-gray-700"
+                        />
                       </div>
-                      <div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pb-2">
+                      <div className="space-y-1">
                         <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Size</label>
-                        <input type="number" value={editorData.textSettings[activeTextIndex]?.size} onChange={(e) => setEditorData(prev => {
-                          const next = [...prev.textSettings];
-                          next[activeTextIndex] = { ...next[activeTextIndex], size: Number(e.target.value) };
-                          return { ...prev, textSettings: next };
-                        })} className="w-full px-3 py-2 bg-gray-50 rounded-xl text-sm font-bold ring-1 ring-gray-100" />
+                        <input
+                          type="number"
+                          value={editorData.textSettings[activeTextIndex]?.size}
+                          onChange={(e) => setEditorData(prev => {
+                            const next = [...prev.textSettings];
+                            next[activeTextIndex] = { ...next[activeTextIndex], size: Number(e.target.value) };
+                            return { ...prev, textSettings: next };
+                          })}
+                          className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm font-bold ring-1 ring-gray-100 dark:ring-gray-700"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Font</label>
+                        <select
+                          value={editorData.textSettings[activeTextIndex]?.font}
+                          onChange={(e) => setEditorData(prev => {
+                            const next = [...prev.textSettings];
+                            next[activeTextIndex] = { ...next[activeTextIndex], font: e.target.value };
+                            return { ...prev, textSettings: next };
+                          })}
+                          className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm font-bold ring-1 ring-gray-100 dark:ring-gray-700"
+                        >
+                          {["Arial", "Times New Roman", "Impact", "Georgia", "Verdana", "Majalla", "MajallaB"].map(f => <option key={f} value={f}>{f}</option>)}
+                        </select>
                       </div>
                     </div>
 
