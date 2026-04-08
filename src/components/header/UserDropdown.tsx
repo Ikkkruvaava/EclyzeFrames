@@ -42,7 +42,7 @@ export default function UserDropdown() {
         onClick={toggleDropdown}
         className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300"
       >
-        <div className="relative overflow-hidden rounded-full h-11 w-11 ring-2 ring-primary/20 shadow-md">
+        {/* <div className="relative overflow-hidden rounded-full h-11 w-11 ring-2 ring-primary/20 shadow-md">
           <Image
             width={100}
             height={100}
@@ -50,7 +50,7 @@ export default function UserDropdown() {
             alt={data?.user?.name || "User"}
             className="object-cover transform hover:scale-105 transition-transform duration-300"
           />
-        </div>
+        </div> */}
 
         <div className="flex flex-col items-start">
           <span className="font-medium text-theme-sm">{data?.user?.name || "User"}</span>
@@ -82,7 +82,7 @@ export default function UserDropdown() {
         className="absolute right-0 mt-2 w-[300px] flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-xl dark:border-gray-700 dark:bg-gray-800 animate-fadeIn"
       >
         <div className="flex items-center space-x-3 mb-3">
-          <div className="relative overflow-hidden rounded-full h-14 w-14 ring-2 ring-primary/30 shadow-lg">
+          {/* <div className="relative overflow-hidden rounded-full h-14 w-14 ring-2 ring-primary/30 shadow-lg">
             <Image
               width={120}
               height={120}
@@ -90,21 +90,21 @@ export default function UserDropdown() {
               alt={data?.user?.name || "User"}
               className="object-cover"
             />
-          </div>
+          </div> */}
           <div>
             <span className="block font-semibold text-base text-gray-800 dark:text-gray-200">
               {data?.user?.name || "User"}
             </span>
-            <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            {/* <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
               {data?.user?.email || ""}
-            </span>
+            </span> */}
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+        {/* <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div> */}
 
         {/* User menu items */}
-        <ul className="space-y-1 mb-2">
+        {/* <ul className="space-y-1 mb-2">
           <li>
             <DropdownItem
               onItemClick={closeDropdown}
@@ -144,7 +144,7 @@ export default function UserDropdown() {
               Settings
             </DropdownItem>
           </li>
-        </ul>
+        </ul> */}
 
         <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
 
