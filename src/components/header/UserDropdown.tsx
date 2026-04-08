@@ -1,14 +1,11 @@
 "use client";
-import Image from "next/image";
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { signOut } from "next-auth/react";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const avatarPath = "/images/avathar/avathar3.svg";
-
+  
   const data = {
     user: {
       name: "Admin",

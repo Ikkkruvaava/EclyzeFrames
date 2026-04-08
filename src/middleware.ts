@@ -22,7 +22,9 @@ export async function middleware(req: NextRequest) {
         if (!token) {
             const url = req.nextUrl.clone();
             url.pathname = '/admin/login';
-            url.searchParams.set('callbackUrl', pathname);
+            // If they were going to exactly /admin, suggest /admin/photoframing/all as callback
+            const targetPath = pathname === '/admin' ? '/admin/photoframing/all' : pathname;
+            url.searchParams.set('callbackUrl', targetPath);
             return NextResponse.redirect(url);
         }
     }
