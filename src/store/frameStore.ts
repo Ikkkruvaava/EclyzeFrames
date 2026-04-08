@@ -66,6 +66,7 @@ export const useFrameStore = create<FrameState>((set, get) => ({
             formData.append('dimensions', JSON.stringify(frame.dimensions));
             formData.append('placementCoords', JSON.stringify(frame.placementCoords));
             formData.append('textSettings', JSON.stringify(frame.textSettings));
+            formData.append('hasImageArea', String(frame.hasImageArea));
             formData.append('currentImageUrl', frame.imageUrl);
             formData.append('isActive', isActive.toString());
 

@@ -97,11 +97,24 @@ export async function PUT(
             const frameImage = formData.get('frameImage') as File | null;
             const name = formData.get('name') as string;
             const dimensions = JSON.parse(formData.get('dimensions') as string);
-            const hasImageArea = formData.get('hasImageArea') !== 'false';
-            const placementCoords = hasImageArea ? JSON.parse(formData.get('placementCoords') as string) : null;
-            const textSettings = JSON.parse(formData.get('textSettings') as string);
-            const currentImageUrl = formData.get('currentImageUrl') as string;
-            const isActive = formData.get('isActive') === 'true';
+            const hasImageAreaRaw = formData.get('hasImageArea');
+            const hasImageArea = hasImageAreaRaw !== null ? hasImageAreaRaw !== 'false' : existingFrame.hasImageArea;
+            
+            const placementCoordsRaw = formData.get('placementCoords');
+            // If hasImageArea is explicitly FALSE, we nullify the placementCoords.
+            // Otherwise, we take it from the form or fallback to the existing one.
+            const placementCoords = hasImageArea === false
+                ? null 
+                : (placementCoordsRaw !== null ? JSON.parse(placementCoordsRaw as string) : existingFrame.placementCoords);
+            
+            const textSettingsRaw = formData.get('textSettings');
+            const textSettings = textSettingsRaw !== null ? JSON.parse(textSettingsRaw as string) : existingFrame.textSettings;
+            
+            const currentImageUrl = formData.get('currentImageUrl') as string || existingFrame.imageUrl;
+            
+            const isActiveRaw = formData.get('isActive');
+            const isActive = isActiveRaw !== null ? isActiveRaw === 'true' : existingFrame.isActive;
+            
             const incrementUsage = formData.get('incrementUsage') === 'true';
 
             if (!name) {
